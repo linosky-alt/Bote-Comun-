@@ -29,8 +29,8 @@
 
 - { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-html, body {
-background: var(–bg);
+html, body, #screen-setup, #screen-main, #screen-stats, #screen-historial {
+background: #08080e !important;
 color: var(–text);
 font-family: ‘DM Sans’, sans-serif;
 min-height: 100vh;
@@ -1741,14 +1741,16 @@ function openVoice() {
 function startListening() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
-    showToast('Tu navegador no soporta reconocimiento de voz', 'error');
+    // iOS Safari fallback — prompt manual input
+    const input = prompt('Dicta tu movimiento (ej: gasto 32 restaurante):');
+    if (input) parseVoice(input);
     return;
   }
 
   recognition = new SpeechRecognition();
   recognition.lang = 'es-ES';
   recognition.continuous = false;
-  recognition.interimResults = true;
+  recognition.interimResults = false; // iOS needs this false
 
   document.getElementById('voiceStatus').textContent = 'Escuchando...';
   document.getElementById('voiceTranscript').textContent = '🎙 Habla ahora...';
@@ -1756,23 +1758,31 @@ function startListening() {
   document.getElementById('voiceStartBtn').style.display = 'none';
 
   recognition.onresult = (e) => {
-    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    const transcript = e.results[0][0].transcript;
     document.getElementById('voiceTranscript').textContent = '"' + transcript + '"';
-    if (e.results[0].isFinal) parseVoice(transcript);
+    parseVoice(transcript);
   };
 
-  recognition.onerror = () => {
-    document.getElementById('voiceStatus').textContent = 'No te he entendido';
+  recognition.onerror = (e) => {
     document.getElementById('voiceCircle').classList.remove('listening');
     document.getElementById('voiceStartBtn').style.display = 'block';
     document.getElementById('voiceStartBtn').textContent = '🔄 Intentar de nuevo';
+    if (e.error === 'not-allowed') {
+      showToast('Permite el acceso al micrófono en Safari → Ajustes', 'error');
+    } else {
+      document.getElementById('voiceStatus').textContent = 'No te he entendido';
+    }
   };
 
   recognition.onend = () => {
     document.getElementById('voiceCircle').classList.remove('listening');
   };
 
-  recognition.start();
+  try {
+    recognition.start();
+  } catch(e) {
+    showToast('Error al iniciar el micrófono', 'error');
+  }
 }
 
 function parseVoice(text) {
