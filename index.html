@@ -1087,8 +1087,13 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
     </div>
 
 ```
-<!-- Botón oculto para resetear conexión Drive -->
-<div style="padding: 30px 20px 10px; text-align:center;">
+<!-- Botones de gestión Drive -->
+<div style="padding: 30px 20px 10px; display:flex; flex-direction:column; align-items:center; gap:12px;">
+  <div onclick="showDriveInfo()" style="
+    width:100%; background:var(--bg3); border:1px solid var(--border2);
+    border-radius:12px; padding:12px 16px; cursor:pointer;
+    font-size:12px; font-weight:600; color:var(--text-mid); text-align:center;
+  ">🔍 Ver info de sincronización</div>
   <div onclick="resetConexion()" style="
     display:inline-block;
     font-size:11px; color:var(--text-dim);
@@ -1286,7 +1291,10 @@ const CAT_COLS = {
 };
 
 /* ── STATE ──────────────────────────────────────────── */
-let state = { movs:[], driveToken:null, driveFileId:null, driveFolderId:null, driveConnected:false };
+// ID fijo del archivo compartido — ambas apps siempre usan este archivo
+const SHARED_FILE_ID = '1JimUsPwu-8atiKA6gLg6Dh7YrYfA6yUP';
+
+let state = { movs:[], driveToken:null, driveFileId:SHARED_FILE_ID, driveFolderId:null, driveConnected:false };
 
 /* ── INIT ───────────────────────────────────────────── */
 window.addEventListener('load', () => {
@@ -1300,10 +1308,10 @@ window.addEventListener('load', () => {
       state.driveToken = tok;
       state.driveConnected = true;
       const s = JSON.parse(localStorage.getItem('bote') || '{}');
-      state.driveFileId   = s.driveFileId   || null;
+      state.driveFileId   = SHARED_FILE_ID;
       state.driveFolderId = s.driveFolderId || null;
       setSyncBar('', 'Sincronizando...');
-      if (state.driveFileId) syncDrive(); else ensureFile();
+      syncDrive();
     }
   }
 });
@@ -1863,27 +1871,26 @@ function skipSetup() {
 
 async function ensureFile() {
   try {
-    let fid = await findFolder();
-    if (!fid) fid = await createFolder();
-    state.driveFolderId = fid;
-    let id = await findFile(fid);
-    if (!id) id = await createFile(fid); else await loadDrive(id);
-    state.driveFileId = id;
+    // Siempre usar el archivo compartido fijo, sin buscar ni crear nuevos
+    state.driveFileId = SHARED_FILE_ID;
+    await loadDrive(SHARED_FILE_ID);
     saveLocal();
     setSyncBar('ok', 'Sincronizado · ' + nowTime());
   } catch(e) { setSyncBar('err', 'Error al conectar con Drive'); }
 }
 
 async function syncDrive() {
-  if (!state.driveConnected || !state.driveFileId) return;
-  try { await loadDrive(state.driveFileId); setSyncBar('ok', 'Sincronizado · ' + nowTime()); }
+  if (!state.driveConnected) return;
+  state.driveFileId = SHARED_FILE_ID;
+  try { await loadDrive(SHARED_FILE_ID); setSyncBar('ok', 'Sincronizado · ' + nowTime()); }
   catch(e) { setSyncBar('err', 'Error al sincronizar'); }
 }
 
 async function saveToDrive() {
-  if (!state.driveConnected || !state.driveFileId) return;
+  if (!state.driveConnected) return;
+  state.driveFileId = SHARED_FILE_ID;
   try {
-    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${state.driveFileId}?uploadType=media`, {
+    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${SHARED_FILE_ID}?uploadType=media`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${state.driveToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ movs: state.movs, updated: Date.now() })
@@ -1953,6 +1960,23 @@ function resetConexion() {
   localStorage.removeItem('setup_done');
   localStorage.removeItem('bote');
   location.reload();
+}
+
+function showDriveInfo() {
+  const connected = state.driveConnected ? '✓ Conectado' : '✗ No conectado';
+  const fileId = state.driveFileId ? state.driveFileId.slice(0,12) + '...' : 'Sin archivo';
+  const folderId = state.driveFolderId ? state.driveFolderId.slice(0,12) + '...' : 'Sin carpeta';
+  const movs = state.movs.length;
+  const last = state.movs.length > 0 ? relTime(state.movs[state.movs.length-1].ts) : 'ninguno';
+  alert(
+    'ESTADO DRIVE\n' +
+    '─────────────\n' +
+    'Conexión: ' + connected + '\n' +
+    'Archivo ID: ' + fileId + '\n' +
+    'Carpeta ID: ' + folderId + '\n' +
+    'Movimientos: ' + movs + '\n' +
+    'Último mov: ' + last
+  );
 }
 
 /* ── DIAGNOSTIC — pulse "?" next to mic ─────────────── */
