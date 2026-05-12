@@ -1085,6 +1085,19 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
       </div>
       <div id="allMovs"></div>
     </div>
+
+```
+<!-- Botón oculto para resetear conexión Drive -->
+<div style="padding: 30px 20px 10px; text-align:center;">
+  <div onclick="resetConexion()" style="
+    display:inline-block;
+    font-size:11px; color:var(--text-dim);
+    border-bottom: 1px dashed var(--text-dim);
+    cursor:pointer; padding-bottom:2px;
+  ">Reconectar Google Drive</div>
+</div>
+```
+
   </div></div>
 </div>
 
@@ -1931,6 +1944,15 @@ function showToast(msg, type) {
 // Skip setup if already done
 if (localStorage.getItem('setup_done')) {
   document.getElementById('screen-setup').classList.remove('active');
+}
+
+/* ── RECONECTAR DRIVE ───────────────────────────────── */
+function resetConexion() {
+  if (!confirm('¿Reconectar Google Drive? Se borrará la conexión actual y podrás vincular de nuevo tu cuenta.')) return;
+  localStorage.removeItem('drive_tok');
+  localStorage.removeItem('setup_done');
+  localStorage.removeItem('bote');
+  location.reload();
 }
 
 /* ── DIAGNOSTIC — pulse "?" next to mic ─────────────── */
