@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="es">
+<html lang="es" style="background:#0f0f0f">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -11,27 +11,28 @@
 <meta name="color-scheme" content="dark">
 <title>Bote Común</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
 /* ─── TOKENS ─────────────────────────────────────────── */
 :root {
-  --bg:        #0a0a0a;
-  --bg2:       #111111;
+  --bg:        #0f0f0f;
+  --bg2:       #141414;
   --bg3:       #1a1a1a;
-  --border:    rgba(255,255,255,0.07);
-  --border2:   rgba(255,255,255,0.12);
+  --border:    #2a2a2a;
+  --border2:   #2a2a2a;
 
-  --lime:      #c8f04a;
-  --lime-dim:  rgba(200,240,74,0.12);
-  --lime-mid:  rgba(200,240,74,0.25);
-  --purple:    #b8a4ff;
-  --purple-dim:rgba(184,164,255,0.14);
-  --red:       #ff6565;
-  --red-dim:   rgba(255,101,101,0.13);
+  --lime:      #86efac;
+  --lime-dim:  rgba(134,239,172,0.12);
+  --lime-mid:  rgba(134,239,172,0.28);
+  --purple:    #c4b5fd;
+  --purple-dim:rgba(196,181,253,0.14);
+  --yellow:    #fde047;
+  --red:       #ff6b6b;
+  --red-dim:   rgba(255,107,107,0.13);
 
-  --text:      #f0f0f0;
+  --text:      #f2f2f2;
   --text-mid:  #888;
   --text-dim:  #444;
 
@@ -40,14 +41,14 @@
 }
 
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html { background:#0a0a0a; }
-html, body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; min-height:100dvh; -webkit-font-smoothing:antialiased; overscroll-behavior:none; }
+html { background:#0f0f0f; }
+html, body { background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; min-height:100vh; min-height:100dvh; -webkit-font-smoothing:antialiased; overscroll-behavior:none; }
 body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 
 /* ─── SCREENS ────────────────────────────────────────── */
 .screen { display:none; min-height:100vh; padding-bottom:100px; }
 .screen.active { display:block; }
-.phone { width:100%; max-width:430px; margin:0 auto; position:relative; }
+.phone { width:100%; position:relative; }
 .content { position:relative; z-index:1; }
 
 /* ─── HEADER ─────────────────────────────────────────── */
@@ -85,8 +86,8 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   display: flex; align-items:center; justify-content:center;
   border: 1.5px solid var(--bg3);
 }
-.av-l { background: var(--lime); color: #0a0a0a; margin-right:-5px; z-index:1; }
-.av-a { background: var(--purple); color: #0a0a0a; }
+.av-l { background: var(--lime); color: #0f0f0f; margin-right:-5px; z-index:1; }
+.av-a { background: var(--purple); color: #0f0f0f; }
 .header-names {
   font-size: 12px; font-weight: 600;
   color: var(--text-mid);
@@ -109,181 +110,205 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 .sync-bar.err { border-color: rgba(255,101,101,.2); color: var(--red); }
 .sync-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
 
-/* ─── BENTO GRID ─────────────────────────────────────── */
-.bento { padding: 0 20px; display:grid; gap:10px; }
+/* ─── PROTO-B WRAPPER (outer card) ──────────────────── */
+.proto-b-wrap {
+  margin: 0;
+  background: var(--bg);
+  border-radius: 0;
+  overflow: visible;
+  padding: 0 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-/* hero + fondos row */
-.bento-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+/* greeting row */
+.pb-greeting {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+.pb-greeting-left {}
+.pb-greeting-sub {
+  font-size: 12px;
+  color: var(--text-mid);
+  font-weight: 400;
+  margin-bottom: 3px;
+}
+.pb-greeting-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.pb-live-badge {
+  background: var(--lime);
+  color: #0f0f0f;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 8px;
+  animation: livepulse 2s ease-in-out infinite;
+}
+@keyframes livepulse { 0%,100%{opacity:1} 50%{opacity:.6} }
 
-.bcard {
-  border-radius: var(--r-card);
-  padding: 18px;
+/* hero total card */
+.pb-hero {
+  background: #1a1a1a;
+  border-radius: 18px;
+  padding: 16px 18px;
+}
+.pb-hero-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.pb-hero-amount {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+.pb-hero-sym {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-mid);
+  vertical-align: super;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.pb-hero-date {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* fondos row */
+.pb-fondos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.pb-fondo {
+  border-radius: 18px;
+  padding: 16px;
   position: relative;
   overflow: hidden;
+  min-height: 110px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-
-/* hero: full width */
-.bcard-hero {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  padding: 22px 22px 20px;
-}
-.hero-tag {
+.pb-fondo-tarjeta { background: var(--purple); }
+.pb-fondo-efectivo { background: var(--lime); }
+.pb-fondo-tag {
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.hero-live {
-  background: var(--lime);
-  color: #0a0a0a;
-  font-size: 8px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.12em;
-  padding: 2px 7px;
-  border-radius: 100px;
-  animation: livepulse 2s ease-in-out infinite;
+  text-transform: uppercase;
+  color: rgba(15,15,15,0.6);
+  margin-bottom: 6px;
 }
-@keyframes livepulse { 0%,100%{opacity:1} 50%{opacity:.5} }
-
-.hero-amount {
+.pb-fondo-val {
   font-family: 'Unbounded', sans-serif;
-  font-size: 44px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--text);
-}
-.hero-amount .sym {
   font-size: 22px;
-  font-weight: 600;
-  color: var(--text-mid);
-  vertical-align: super;
-  margin-right: 2px;
-  font-family: 'DM Sans', sans-serif;
-}
-.hero-date {
-  margin-top: 10px;
-  font-size: 12px;
-  color: var(--text-dim);
-  font-weight: 400;
-}
-
-/* fondo tarjeta */
-.bcard-tarjeta {
-  background: var(--purple);
-  border: none;
-}
-.bcard-tarjeta .bcard-tag { color: rgba(10,10,10,0.5); }
-.bcard-tarjeta .bcard-val { color: #0a0a0a; }
-.bcard-tarjeta .bcard-who { color: rgba(10,10,10,0.55); }
-
-/* fondo efectivo */
-.bcard-efectivo {
-  background: var(--lime);
-  border: none;
-}
-.bcard-efectivo .bcard-tag { color: rgba(10,10,10,0.5); }
-.bcard-efectivo .bcard-val { color: #0a0a0a; }
-.bcard-efectivo .bcard-who { color: rgba(10,10,10,0.55); }
-
-.bcard-tag {
-  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-.bcard-val {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1;
+  color: #0f0f0f;
   letter-spacing: -0.02em;
+  line-height: 1;
 }
-.bcard-who {
-  margin-top: 6px;
+.pb-fondo-who {
   font-size: 11px;
   font-weight: 500;
+  color: rgba(15,15,15,0.6);
+  margin-top: 5px;
 }
-.bcard-icon {
+.pb-fondo-icon {
   position: absolute;
-  bottom: 14px;
-  right: 16px;
-  opacity: 0.18;
+  bottom: 12px;
+  right: 14px;
+  opacity: 0.2;
 }
 
-/* ajuste banner */
-.bcard-ajuste {
-  background: var(--red-dim);
-  border: 1px solid rgba(255,101,101,0.25);
-  flex-direction: row;
+/* ajuste */
+.pb-ajuste {
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 18px;
+  background: #1e1e1e;
+  border: 1px solid rgba(255,101,101,0.3);
 }
-.bcard-ajuste.ok {
-  background: var(--bg2);
+.pb-ajuste.ok {
+  background: #1a1a1a;
   border-color: rgba(200,240,74,0.35);
 }
-.ajuste-icon-box {
-  width: 38px; height: 38px;
-  border-radius: 11px;
+.pb-aj-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
   background: rgba(255,101,101,0.15);
-  border: 1px solid rgba(255,101,101,0.2);
+  border: 1px solid rgba(255,101,101,0.25);
   display: flex; align-items:center; justify-content:center;
   flex-shrink: 0;
 }
-.bcard-ajuste.ok .ajuste-icon-box {
-  background: var(--lime-dim);
-  border-color: var(--lime-mid);
+.pb-ajuste.ok .pb-aj-icon {
+  background: rgba(200,240,74,0.12);
+  border-color: rgba(200,240,74,0.3);
 }
-.ajuste-body { flex:1; }
-.ajuste-title {
+.pb-aj-body { flex: 1; }
+.pb-aj-title {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--red);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
-.bcard-ajuste.ok .ajuste-title { color: var(--lime); }
-.ajuste-desc {
+.pb-ajuste.ok .pb-aj-title { color: var(--lime); }
+.pb-aj-desc {
   font-size: 13px;
   font-weight: 500;
   color: var(--text);
-  line-height: 1.3;
 }
-.ajuste-amt {
+.pb-aj-amt {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--red);
-  flex-shrink: 0;
   letter-spacing: -0.02em;
 }
-.bcard-ajuste.ok .ajuste-amt { color: var(--lime); }
+.pb-ajuste.ok .pb-aj-amt { color: var(--lime); }
 
-/* mini historial card */
-.bcard-dark {
-  background: var(--bg2);
-  border: 1px solid var(--border);
+/* mini gastos + gastos mes row */
+.pb-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
-.mini-hist-title {
+
+/* mini historial */
+.pb-mini-hist {
+  background: #1a1a1a;
+  border-radius: 18px;
+  padding: 14px;
+  grid-column: span 2;
+}
+.pb-mini-title {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-dim);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .mini-hist-row {
   display: flex;
@@ -291,12 +316,12 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   align-items: center;
   padding: 7px 0;
 }
-.mini-hist-row:not(:last-child) { border-bottom: 1px solid var(--border); }
+.mini-hist-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.06); }
 .mini-name {
   display: flex; align-items:center; gap:8px;
   font-size: 12px; color: var(--text-mid);
 }
-.mini-name svg { opacity: 0.5; }
+.mini-name svg { opacity: 0.45; flex-shrink:0; }
 .mini-val {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
@@ -305,14 +330,142 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 }
 .mini-val.neg { color: var(--red); }
 
-/* stats mini */
-.bcard-stats {
-  background: var(--bg2);
-  border: 1px solid var(--border);
+/* balance amarillo */
+.pb-balance {
+  background: var(--yellow);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 90px;
 }
-.stats-tag { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px; }
-.stats-val { font-family:'Unbounded',sans-serif; font-size:20px; font-weight:700; color:var(--text); }
-.stats-sub { font-size:11px; color:var(--text-dim); margin-top:4px; }
+.pb-balance-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(15,15,15,0.55);
+  margin-bottom: 8px;
+}
+.pb-balance-val {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f0f0f;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* gastos mes */
+.pb-gastos-mes {
+  background: #1a1a1a;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 90px;
+}
+.pb-mes-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.pb-mes-val {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.pb-mes-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+/* CTA add button */
+.pb-cta {
+  background: var(--lime);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: opacity .12s;
+  -webkit-user-select: none;
+}
+.pb-cta:active { opacity: .85; }
+.pb-cta-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: rgba(15,15,15,0.12);
+  display: flex; align-items:center; justify-content:center;
+  flex-shrink: 0;
+}
+.pb-cta-texts {}
+.pb-cta-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f0f0f;
+  letter-spacing: -0.02em;
+}
+.pb-cta-sub {
+  font-size: 12px;
+  color: rgba(15,15,15,0.55);
+  margin-top: 2px;
+}
+
+/* secondary actions */
+.pb-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.pb-action {
+  background: #1a1a1a;
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity .12s;
+  -webkit-user-select: none;
+}
+.pb-action:active { opacity: .75; }
+.pb-action-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items:center; justify-content:center;
+}
+.pb-action-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.pb-action-sub { font-size: 11px; color: var(--text-mid); margin-top: 2px; }
+
+/* ultimos movimientos section below wrap */
+.pb-section-title {
+  padding: 18px 20px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
 
 /* ─── SECTION TITLE ──────────────────────────────────── */
 .section-title {
@@ -323,57 +476,6 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   text-transform: uppercase;
   color: var(--text-dim);
 }
-
-/* ─── ACTION BUTTONS ─────────────────────────────────── */
-.acciones { padding: 0 20px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-.btn-accion {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: var(--r-card);
-  padding: 17px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  cursor: pointer;
-  transition: transform .1s, background .15s;
-  -webkit-user-select: none;
-}
-.btn-accion:active { transform: scale(.96); }
-
-.btn-accion.cta {
-  grid-column: span 2;
-  flex-direction: row;
-  align-items: center;
-  gap: 14px;
-  padding: 18px 20px;
-  background: var(--lime);
-  border-color: var(--lime);
-}
-.btn-accion.aportar { border-color: rgba(184,164,255,0.3); }
-.btn-accion.stats-btn { border-color: rgba(200,240,74,0.2); }
-
-.btn-icon-box {
-  width: 38px; height: 38px;
-  border-radius: 11px;
-  background: rgba(255,255,255,0.07);
-  display: flex; align-items:center; justify-content:center;
-  flex-shrink: 0;
-}
-.btn-accion.cta .btn-icon-box { background: rgba(10,10,10,0.15); }
-
-.btn-texts { flex:1; }
-.btn-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-.btn-accion.cta .btn-title { color: #0a0a0a; font-size: 14px; }
-.btn-sub { font-size: 12px; color: var(--text-mid); margin-top: 3px; }
-.btn-accion.cta .btn-sub { color: rgba(10,10,10,0.5); }
 
 /* ─── HISTORIAL ITEMS ────────────────────────────────── */
 .historial-section { padding: 0 20px; }
@@ -506,10 +608,10 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 /* ─── BOTTOM NAV ─────────────────────────────────────── */
 .bottom-nav {
   position: fixed; bottom:0; left:50%; transform:translateX(-50%);
-  width:100%; max-width:430px; z-index:98;
+  width:100%; z-index:98;
   display:flex; justify-content:space-around; align-items:center;
   padding: 10px 0 max(28px, calc(env(safe-area-inset-bottom) + 10px));
-  background: linear-gradient(to top, #0a0a0a 65%, rgba(10,10,10,0));
+  background: linear-gradient(to top, #0a0a0a 65%, rgba(15,15,15,0));
   border-top: 1px solid var(--border);
 }
 .nav-btn {
@@ -560,7 +662,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 .mic-label {
   font-size: 10px; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase;
-  color: #0a0a0a;
+  color: #0f0f0f;
   background: var(--lime);
   border-radius: 100px;
   padding: 3px 10px;
@@ -581,7 +683,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   border: 1px solid var(--border2);
   border-radius: 28px 28px 0 0;
   padding: 24px 20px 44px;
-  width: 100%; max-width: 430px;
+  width: 100%; max-width: 480px;
   animation: slideUp .28s cubic-bezier(.34,1.4,.64,1);
 }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
@@ -615,7 +717,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   -webkit-appearance: none; color-scheme: dark;
 }
 .form-input:focus { border-color: var(--lime); }
-.form-input.nota { font-family:'DM Sans',sans-serif; font-size:15px; font-weight:400; }
+.form-input.nota { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:400; }
 .form-input::placeholder { color: var(--text-dim); }
 
 .pill-grid  { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
@@ -635,7 +737,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 
 .btn-submit {
   width:100%; padding:15px; border-radius:14px;
-  background: var(--lime); border:none; color:#0a0a0a;
+  background: var(--lime); border:none; color:#0f0f0f;
   font-family:'Unbounded',sans-serif; font-size:14px; font-weight:800;
   cursor:pointer; margin-top:10px; transition:opacity .15s;
   letter-spacing: -0.01em;
@@ -646,7 +748,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 .btn-cancel {
   width:100%; padding:13px; border-radius:14px;
   background:var(--bg3); border:1px solid var(--border2); color:var(--text-mid);
-  font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500;
+  font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:500;
   cursor:pointer; margin-top:7px; -webkit-appearance:none;
 }
 
@@ -776,114 +878,136 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   <div class="phone"><div class="content">
 
 ```
-<div class="header">
-  <div class="app-wordmark">Bote<span>.</span></div>
-  <div class="header-pill">
-    <div class="avatar-duo">
-      <div class="av av-l">L</div>
-      <div class="av av-a">A</div>
-    </div>
-    <div class="header-names">Lino & Arantxa</div>
+<!-- sync bar (small, top) -->
+<div style="padding: max(54px, calc(env(safe-area-inset-top) + 14px)) 20px 10px; display:flex; justify-content:space-between; align-items:center;">
+  <div class="sync-bar" id="syncBar" style="margin:0; flex:1; border-radius:8px; padding:6px 12px; font-size:11px;">
+    <div class="sync-dot"></div>
+    <span id="syncTxt">Local · sin sincronización</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:6px; margin-left:10px; background:var(--bg3); border:1px solid var(--border2); border-radius:100px; padding:4px 10px 4px 6px;">
+    <div style="display:flex;"><div class="av av-l">L</div><div class="av av-a">A</div></div>
+    <span style="font-size:11px; font-weight:600; color:var(--text-mid);">L & A</span>
   </div>
 </div>
 
-<div class="sync-bar" id="syncBar">
-  <div class="sync-dot"></div>
-  <span id="syncTxt">Local · sin sincronización</span>
-</div>
+<!-- PROTO-B WRAPPER -->
+<div class="proto-b-wrap">
 
-<!-- BENTO -->
-<div class="bento">
+  <!-- Greeting -->
+  <div class="pb-greeting">
+    <div class="pb-greeting-left">
+      <div class="pb-greeting-sub" id="greetingTxt">Buenos días</div>
+      <div class="pb-greeting-title">Bote Común</div>
+    </div>
+    <div class="pb-live-badge">EN VIVO</div>
+  </div>
 
   <!-- Hero total -->
-  <div class="bcard bcard-hero">
-    <div>
-      <div class="hero-tag">
-        Total en el bote
-        <span class="hero-live">EN VIVO</span>
-      </div>
-      <div class="hero-amount">
-        <span class="sym">€</span><span id="heroInt">0</span><span id="heroDec" style="font-size:22px;color:var(--text-mid)">,00</span>
-      </div>
+  <div class="pb-hero">
+    <div class="pb-hero-tag">Total en el bote</div>
+    <div class="pb-hero-amount">
+      <span class="pb-hero-sym">€</span><span id="heroInt">0</span><span id="heroDec" style="font-size:20px;color:var(--text-mid);font-family:'Unbounded',sans-serif;font-weight:800;">,00</span>
     </div>
-    <div class="hero-date" id="heroDate">—</div>
+    <div class="pb-hero-date" id="heroDate">—</div>
   </div>
 
-  <!-- Fondos row -->
-  <div class="bento-row">
-    <div class="bcard bcard-tarjeta">
+  <!-- Fondos -->
+  <div class="pb-fondos">
+    <div class="pb-fondo pb-fondo-tarjeta">
       <div>
-        <div class="bcard-tag">Tarjeta</div>
-        <div class="bcard-val" id="valTarjeta">€0</div>
-        <div class="bcard-who">Arantxa aporta</div>
+        <div class="pb-fondo-tag">Tarjeta</div>
+        <div class="pb-fondo-val" id="valTarjeta">€0,00</div>
+        <div class="pb-fondo-who">Arantxa aporta</div>
       </div>
-      <div class="bcard-icon">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <div class="pb-fondo-icon">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#0f0f0f" stroke-width="1.4"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       </div>
     </div>
-    <div class="bcard bcard-efectivo">
+    <div class="pb-fondo pb-fondo-efectivo">
       <div>
-        <div class="bcard-tag">Efectivo</div>
-        <div class="bcard-val" id="valEfectivo">€0</div>
-        <div class="bcard-who">Lino aporta</div>
+        <div class="pb-fondo-tag">Efectivo</div>
+        <div class="pb-fondo-val" id="valEfectivo">€0,00</div>
+        <div class="pb-fondo-who">Lino aporta</div>
       </div>
-      <div class="bcard-icon">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg>
+      <div class="pb-fondo-icon">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#0f0f0f" stroke-width="1.4"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg>
       </div>
     </div>
   </div>
 
-  <!-- Ajuste banner -->
-  <div class="bcard bcard-ajuste" id="ajBanner">
-    <div class="ajuste-icon-box" id="ajIco">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+  <!-- Ajuste -->
+  <div class="pb-ajuste" id="ajBanner">
+    <div class="pb-aj-icon" id="ajIco">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
     </div>
-    <div class="ajuste-body">
-      <div class="ajuste-title" id="ajTtl">—</div>
-      <div class="ajuste-desc" id="ajDesc">—</div>
+    <div class="pb-aj-body">
+      <div class="pb-aj-title" id="ajTtl">—</div>
+      <div class="pb-aj-desc" id="ajDesc">—</div>
     </div>
-    <div class="ajuste-amt" id="ajAmt">€0</div>
+    <div class="pb-aj-amt" id="ajAmt">€0</div>
   </div>
 
-  <!-- Mini historial -->
-  <div class="bcard bcard-dark">
-    <div class="mini-hist-title">Últimos gastos</div>
+  <!-- Mini historial (full width) -->
+  <div class="pb-mini-hist">
+    <div class="pb-mini-title">Últimos gastos</div>
     <div id="miniMovs">
-      <div class="mini-hist-row"><span class="mini-name" style="color:var(--text-dim)">Sin movimientos aún</span></div>
+      <div class="mini-hist-row"><span class="mini-name" style="color:var(--text-dim)">Sin gastos aún</span></div>
     </div>
   </div>
 
-</div><!-- /bento -->
+  <!-- Balance amarillo + Gastos mes -->
+  <div class="pb-bottom-row">
+    <div class="pb-balance">
+      <div class="pb-balance-tag">Balance</div>
+      <div class="pb-balance-val" id="balanceVal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f0f0f" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Ok
+      </div>
+    </div>
+    <div class="pb-gastos-mes">
+      <div class="pb-mes-tag">Gastos mes</div>
+      <div class="pb-mes-val" id="gastosMesVal">€0</div>
+      <div class="pb-mes-sub" id="gastosMesSub">—</div>
+    </div>
+  </div>
 
-<div class="section-title">Acciones rápidas</div>
-<div class="acciones">
-  <div class="btn-accion cta" onclick="openModal('gasto')">
-    <div class="btn-icon-box">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  <!-- CTA Añadir gasto -->
+  <div class="pb-cta" onclick="openModal('gasto')">
+    <div class="pb-cta-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f0f0f" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </div>
-    <div class="btn-texts">
-      <div class="btn-title">Añadir gasto</div>
-      <div class="btn-sub">Registrar un nuevo gasto</div>
+    <div class="pb-cta-texts">
+      <div class="pb-cta-title">+ Añadir Gasto</div>
+      <div class="pb-cta-sub">Registrar un nuevo gasto</div>
     </div>
   </div>
-  <div class="btn-accion aportar" onclick="openModal('aportacion')">
-    <div class="btn-icon-box">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-    </div>
-    <div class="btn-title">Aportar</div>
-    <div class="btn-sub">Meter dinero al bote</div>
-  </div>
-  <div class="btn-accion stats-btn" onclick="showScreen('stats')">
-    <div class="btn-icon-box">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
-    </div>
-    <div class="btn-title">Estadísticas</div>
-    <div class="btn-sub">Ver resumen del mes</div>
-  </div>
-</div>
 
-<div class="section-title">Últimos movimientos</div>
-<div class="historial-section" id="mainMovs"></div>
+  <!-- Aportar + Stats -->
+  <div class="pb-actions-row">
+    <div class="pb-action" onclick="openModal('aportacion')">
+      <div class="pb-action-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div>
+        <div class="pb-action-title">Aportar</div>
+        <div class="pb-action-sub">Meter dinero al bote</div>
+      </div>
+    </div>
+    <div class="pb-action" onclick="showScreen('stats')">
+      <div class="pb-action-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
+      </div>
+      <div>
+        <div class="pb-action-title">Estadísticas</div>
+        <div class="pb-action-sub">Ver resumen del mes</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /proto-b-wrap -->
+
+<div class="pb-section-title">Últimos movimientos</div>
+<div class="historial-section" id="mainMovs" style="padding:0 20px;"></div>
 ```
 
   </div></div>
@@ -983,9 +1107,9 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
     <div class="mic-ring2"></div>
     <svg width="24" height="24" viewBox="0 0 24 24" fill="#0a0a0a">
       <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#0a0a0a" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <line x1="12" y1="19" x2="12" y2="23" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/>
-      <line x1="8" y1="23" x2="16" y2="23" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#0f0f0f" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <line x1="12" y1="19" x2="12" y2="23" stroke="#0f0f0f" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8" y1="23" x2="16" y2="23" stroke="#0f0f0f" stroke-width="2" stroke-linecap="round"/>
     </svg>
   </div>
   <div class="mic-label" id="micLbl">Mantén pulsado</div>
@@ -1211,6 +1335,26 @@ function renderMain() {
   document.getElementById('valTarjeta').textContent  = fmt(tarjeta);
   document.getElementById('valEfectivo').textContent = fmt(efectivo);
 
+  // Greeting by time
+  const h = new Date().getHours();
+  const greet = h < 13 ? 'Buenos días' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
+  const gEl = document.getElementById('greetingTxt');
+  if (gEl) gEl.textContent = greet;
+
+  // Gastos del mes
+  const now = new Date(), yr = now.getFullYear(), mo = now.getMonth();
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  let gastosMes = 0;
+  state.movs.forEach(m => {
+    if (m.tipo !== 'gasto') return;
+    const d = new Date(m.ts);
+    if (d.getFullYear() === yr && d.getMonth() === mo) gastosMes += m.importe;
+  });
+  const gmEl = document.getElementById('gastosMesVal');
+  const gmSub = document.getElementById('gastosMesSub');
+  if (gmEl) gmEl.textContent = fmt(gastosMes);
+  if (gmSub) gmSub.textContent = meses[mo] + ' ' + yr;
+
   // Ajuste banner
   const diff = apArantxa - apLino;
   const banner = document.getElementById('ajBanner');
@@ -1220,20 +1364,20 @@ function renderMain() {
   const amt    = document.getElementById('ajAmt');
 
   if (Math.abs(diff) < 0.01) {
-    banner.className = 'bcard bcard-ajuste ok';
-    ico.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    banner.className = 'pb-ajuste ok';
+    ico.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`;
     ttl.textContent  = 'Equilibrado';
     desc.textContent = 'Los dos aportáis lo mismo';
     amt.textContent  = '€0';
   } else if (diff > 0) {
-    banner.className = 'bcard bcard-ajuste';
-    ico.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+    banner.className = 'pb-ajuste';
+    ico.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
     ttl.textContent  = 'Ajuste pendiente';
     desc.textContent = 'Lino debe igualar';
     amt.textContent  = fmt(diff);
   } else {
-    banner.className = 'bcard bcard-ajuste';
-    ico.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+    banner.className = 'pb-ajuste';
+    ico.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
     ttl.textContent  = 'Ajuste pendiente';
     desc.textContent = 'Arantxa debe igualar';
     amt.textContent  = fmt(Math.abs(diff));
