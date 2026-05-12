@@ -15,7 +15,35 @@
 <title>Bote Común</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+apiKey: “AIzaSyBfq8QtOj5vcyFDuNJ7Z9kfsTD81ePvBJ8”,
+authDomain: “bote-comun-1da0e.firebaseapp.com”,
+databaseURL: “https://bote-comun-1da0e-default-rtdb.europe-west1.firebasedatabase.app”,
+projectId: “bote-comun-1da0e”,
+storageBucket: “bote-comun-1da0e.firebasestorage.app”,
+messagingSenderId: “390024772411”,
+appId: “1:390024772411:web:b21fcf22c1fba471c1951e”
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const boteRef = ref(db, ‘bote’);
+
+// Expose to global scope for use in non-module scripts
+window._fbSet = (data) => set(boteRef, data);
+window._fbListen = (cb) => onValue(boteRef, (snap) => {
+const val = snap.val();
+if (val) cb(val);
+});
+
+// Signal that Firebase is ready
+window._fbReady = true;
+document.dispatchEvent(new Event(‘firebase-ready’));
+</script>
 
 <style>
 /* ─── TOKENS ─────────────────────────────────────────── */
@@ -753,58 +781,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   cursor:pointer; margin-top:7px; -webkit-appearance:none;
 }
 
-/* ─── SETUP ──────────────────────────────────────────── */
-.setup-wrap {
-  min-height:100vh; display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  padding:40px 22px; text-align:center;
-}
-.setup-logo {
-  width:72px; height:72px; border-radius:22px;
-  background: var(--lime-dim); border:1px solid var(--lime-mid);
-  display:flex; align-items:center; justify-content:center;
-  margin: 0 auto 24px;
-}
-.setup-title {
-  font-family:'Unbounded',sans-serif; font-size:26px; font-weight:800;
-  color:var(--text); margin-bottom:10px; letter-spacing:-.03em;
-}
-.setup-title span { color:var(--lime); }
-.setup-sub { font-size:14px; color:var(--text-mid); line-height:1.6; margin-bottom:32px; max-width:300px; }
-.setup-steps { width:100%; max-width:340px; margin-bottom:32px; text-align:left; }
-.setup-step { display:flex; gap:13px; align-items:flex-start; margin-bottom:16px; }
-.step-num {
-  width:26px; height:26px; border-radius:50%; flex-shrink:0;
-  background:var(--lime-dim); border:1px solid var(--lime-mid);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Unbounded',sans-serif; font-size:10px; font-weight:700; color:var(--lime);
-}
-.step-text { font-size:13px; color:var(--text-mid); line-height:1.5; padding-top:3px; }
-.step-text strong { color:var(--text); }
-.btn-google {
-  display:flex; align-items:center; gap:10px;
-  background:#fff; border:none; border-radius:13px; padding:15px 22px;
-  font-size:15px; font-weight:600; color:#1a1a1a;
-  cursor:pointer; width:100%; max-width:340px; justify-content:center;
-  margin-bottom:11px; box-shadow:0 4px 20px rgba(0,0,0,.3);
-  transition:opacity .15s;
-}
-.btn-google:active { opacity:.85; }
-.btn-skip {
-  background:transparent; border:1px solid var(--border2); border-radius:13px;
-  padding:13px; font-size:14px; color:var(--text-mid);
-  cursor:pointer; width:100%; max-width:340px;
-}
-.install-hint {
-  margin-top:26px; padding:16px;
-  background:var(--bg2); border:1px solid var(--border2); border-radius:16px;
-  max-width:340px; width:100%; text-align:left;
-}
-.install-hint-title {
-  font-family:'Unbounded',sans-serif; font-size:11px; font-weight:700;
-  color:var(--text); margin-bottom:7px; letter-spacing:-.01em;
-}
-.install-hint-text { font-size:12px; color:var(--text-mid); line-height:1.6; }
+/* Setup screen removed — Firebase sync */
 
 /* ─── TOAST ──────────────────────────────────────────── */
 .toast {
@@ -828,48 +805,6 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 <body>
 
 <div class="toast" id="toast"></div>
-
-<!-- ══════════════════════════════════════
-     SETUP
-══════════════════════════════════════ -->
-
-<div id="screen-setup" class="screen active">
-  <div class="setup-wrap">
-    <div class="setup-logo">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#c8f04a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M14.5 8.5H10a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H9.5"/>
-        <line x1="12" y1="6" x2="12" y2="8.5"/>
-        <line x1="12" y1="16.5" x2="12" y2="19"/>
-      </svg>
-    </div>
-    <div class="setup-title">Bote<span>.</span></div>
-    <div class="setup-sub">La app de gastos compartidos de Lino & Arantxa.</div>
-    <div class="setup-steps">
-      <div class="setup-step">
-        <div class="step-num">1</div>
-        <div class="step-text">Crea una carpeta en Google Drive llamada <strong>"Bote Común"</strong> y compártela como <strong>editor</strong>.</div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">2</div>
-        <div class="step-text">Pulsa <strong>"Conectar con Google"</strong> y autoriza el acceso.</div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">3</div>
-        <div class="step-text">En Safari: botón <strong>compartir → "Añadir a pantalla de inicio"</strong>.</div>
-      </div>
-    </div>
-    <button class="btn-google" onclick="connectGoogle()">
-      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7z"/></svg>
-      Conectar con Google Drive
-    </button>
-    <button class="btn-skip" onclick="skipSetup()">Usar sin sincronización (solo local)</button>
-    <div class="install-hint">
-      <div class="install-hint-title">Añadir a pantalla de inicio</div>
-      <div class="install-hint-text">Safari → botón compartir → <strong>"Añadir a pantalla de inicio"</strong> → Añadir.</div>
-    </div>
-  </div>
-</div>
 
 <!-- ══════════════════════════════════════
      MAIN
@@ -1271,9 +1206,6 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 
 <script>
 /* ── CONSTANTS ──────────────────────────────────────── */
-const CLIENT_ID = '1058462747472-2noea70hh89a0drck7dit8kpnuq9mq64.apps.googleusercontent.com';
-const SCOPE = 'https://www.googleapis.com/auth/drive.file';
-
 const CAT_ICONS_SVG = {
   Supermercado: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
   Restaurante:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fda4af" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
@@ -1291,54 +1223,53 @@ const CAT_COLS = {
 };
 
 /* ── STATE ──────────────────────────────────────────── */
-// ID fijo del archivo compartido — ambas apps siempre usan este archivo
-const SHARED_FILE_ID = '1JimUsPwu-8atiKA6gLg6Dh7YrYfA6yUP';
-
-let state = { movs:[], driveToken:null, driveFileId:SHARED_FILE_ID, driveFolderId:null, driveConnected:false };
+let state = { movs:[], fbConnected:false };
 
 /* ── INIT ───────────────────────────────────────────── */
 window.addEventListener('load', () => {
-  loadLocal();
   refreshDate();
   setInterval(refreshDate, 60000);
-  if (localStorage.getItem('setup_done')) {
-    enterApp();
-    const tok = localStorage.getItem('drive_tok');
-    if (tok) {
-      state.driveToken = tok;
-      state.driveConnected = true;
-      const s = JSON.parse(localStorage.getItem('bote') || '{}');
-      state.driveFileId   = SHARED_FILE_ID;
-      state.driveFolderId = s.driveFolderId || null;
-      setSyncBar('', 'Sincronizando...');
-      syncDrive();
-    }
+
+  // Wait for Firebase then connect
+  const initFirebase = () => {
+    setSyncBar('', 'Conectando...');
+    window._fbListen((data) => {
+      if (data.movs && data.movs.length >= state.movs.length) {
+        state.movs = data.movs;
+        state.fbConnected = true;
+        renderAll();
+        setSyncBar('ok', 'Sincronizado · ' + nowTime());
+      } else if (state.movs.length > 0) {
+        // Local has more — push to Firebase
+        fbSave();
+      }
+      state.fbConnected = true;
+    });
+  };
+
+  if (window._fbReady) {
+    initFirebase();
+  } else {
+    document.addEventListener('firebase-ready', initFirebase);
   }
+
+  // Always enter app directly — no setup screen needed
+  enterApp();
 });
 
 function enterApp() {
   showScreen('main');
-
-  // Re-check SR availability after entering app
   SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-
   const micWrap = document.getElementById('micWrap');
   if (SR) {
     micWrap.style.display = 'flex';
   } else {
-    // SpeechRecognition not available — hide mic entirely
     micWrap.style.display = 'none';
   }
-
-  // Request mic permission proactively so iOS shows dialog before first use
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(s => {
-        s.getTracks().forEach(t => t.stop());
-      })
-      .catch(err => {
-        // Permission denied — will show toast when user tries mic
-      });
+      .then(s => s.getTracks().forEach(t => t.stop()))
+      .catch(() => {});
   }
 }
 
@@ -1364,12 +1295,8 @@ function showScreen(name) {
   window.scrollTo(0, 0);
 }
 
-/* ── STORAGE ────────────────────────────────────────── */
-function saveLocal() { localStorage.setItem('bote', JSON.stringify(state)); }
-function loadLocal() {
-  const s = localStorage.getItem('bote');
-  if (s) try { Object.assign(state, JSON.parse(s)); renderAll(); } catch(e) {}
-}
+/* ── STORAGE (local backup) ─────────────────────────── */
+function saveLocal() { localStorage.setItem('bote_backup', JSON.stringify({movs:state.movs})); }
 
 /* ── BALANCES ───────────────────────────────────────── */
 function calcBalances() {
@@ -1623,7 +1550,7 @@ function saveAp() {
   persist(); closeModal('ov-ap'); showToast('Aportación guardada', 'ok');
 }
 
-function persist() { saveLocal(); renderAll(); saveToDrive(); }
+function persist() { renderAll(); fbSave(); }
 
 /* ── RESET ──────────────────────────────────────────── */
 function openConfirm() { document.getElementById('ov-confirm').classList.add('open'); }
@@ -1844,91 +1771,13 @@ function voiceSave(text) {
   showToast((tipo === 'aportacion' ? '✓ Aportación' : '✓ Gasto') + ' ' + fmt(imp) + (quien ? ' · ' + quien : '') + ' · ' + (fondo === 'tarjeta' ? 'Tarjeta' : 'Efectivo'), 'ok');
 }
 
-/* ── GOOGLE DRIVE ───────────────────────────────────── */
-function connectGoogle() {
-  const tc = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPE,
-    callback: async (r) => {
-      if (r.error) { showToast('Error al conectar', 'err'); return; }
-      state.driveToken = r.access_token;
-      state.driveConnected = true;
-      localStorage.setItem('drive_tok', r.access_token);
-      showToast('Google Drive conectado', 'ok');
-      await ensureFile();
-      localStorage.setItem('setup_done', '1');
-      enterApp();
-    }
-  });
-  tc.requestAccessToken();
-}
-
-function skipSetup() {
-  localStorage.setItem('setup_done', '1');
-  enterApp();
-  setSyncBar('', 'Local · sin sincronización');
-}
-
-async function ensureFile() {
-  try {
-    // Siempre usar el archivo compartido fijo, sin buscar ni crear nuevos
-    state.driveFileId = SHARED_FILE_ID;
-    await loadDrive(SHARED_FILE_ID);
-    saveLocal();
-    setSyncBar('ok', 'Sincronizado · ' + nowTime());
-  } catch(e) { setSyncBar('err', 'Error al conectar con Drive'); }
-}
-
-async function syncDrive() {
-  if (!state.driveConnected) return;
-  state.driveFileId = SHARED_FILE_ID;
-  try { await loadDrive(SHARED_FILE_ID); setSyncBar('ok', 'Sincronizado · ' + nowTime()); }
-  catch(e) { setSyncBar('err', 'Error al sincronizar'); }
-}
-
-async function saveToDrive() {
-  if (!state.driveConnected) return;
-  state.driveFileId = SHARED_FILE_ID;
-  try {
-    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${SHARED_FILE_ID}?uploadType=media`, {
-      method: 'PATCH',
-      headers: { Authorization: `Bearer ${state.driveToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ movs: state.movs, updated: Date.now() })
-    });
-    setSyncBar('ok', 'Sincronizado · ' + nowTime());
-  } catch(e) { setSyncBar('err', 'Error al guardar'); }
-}
-
-async function loadDrive(id) {
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
-  const d = await r.json();
-  if (d.movs) { state.movs = d.movs; renderAll(); }
-}
-
-async function findFolder() {
-  const q = encodeURIComponent(`name='Bote Común' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
-  const d = await r.json();
-  return d.files && d.files[0] ? d.files[0].id : null;
-}
-async function createFolder() {
-  const r = await fetch('https://www.googleapis.com/drive/v3/files', { method: 'POST', headers: { Authorization: `Bearer ${state.driveToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Bote Común', mimeType: 'application/vnd.google-apps.folder' }) });
-  return (await r.json()).id;
-}
-async function findFile(fid) {
-  const q = encodeURIComponent(`name='bote_data.json' and '${fid}' in parents and trashed=false`);
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
-  const d = await r.json();
-  return d.files && d.files[0] ? d.files[0].id : null;
-}
-async function createFile(fid) {
-  const meta = { name: 'bote_data.json', parents: [fid], mimeType: 'application/json' };
-  const body = JSON.stringify({ movs: [], updated: Date.now() });
-  const form = new FormData();
-  form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
-  form.append('file', new Blob([body], { type: 'application/json' }));
-  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', { method: 'POST', headers: { Authorization: `Bearer ${state.driveToken}` }, body: form });
-  return (await r.json()).id;
+/* ── FIREBASE SYNC ──────────────────────────────────── */
+function fbSave() {
+  if (!window._fbSet) return;
+  if (state.movs.length === 0) return;
+  window._fbSet({ movs: state.movs, updated: Date.now() })
+    .then(() => setSyncBar('ok', 'Sincronizado · ' + nowTime()))
+    .catch(() => setSyncBar('err', 'Error al guardar'));
 }
 
 /* ── HELPERS ────────────────────────────────────────── */
@@ -1948,34 +1797,25 @@ function showToast(msg, type) {
   toastT = setTimeout(() => el.classList.remove('show'), 4000);
 }
 
-// Skip setup if already done
-if (localStorage.getItem('setup_done')) {
-  document.getElementById('screen-setup').classList.remove('active');
-}
+
 
 /* ── RECONECTAR DRIVE ───────────────────────────────── */
 function resetConexion() {
-  if (!confirm('¿Reconectar Google Drive? Se borrará la conexión actual y podrás vincular de nuevo tu cuenta.')) return;
-  localStorage.removeItem('drive_tok');
-  localStorage.removeItem('setup_done');
-  localStorage.removeItem('bote');
+  if (!confirm('¿Borrar datos locales y resincronizar con Firebase?')) return;
+  localStorage.removeItem('bote_backup');
   location.reload();
 }
 
 function showDriveInfo() {
-  const connected = state.driveConnected ? '✓ Conectado' : '✗ No conectado';
-  const fileId = state.driveFileId ? state.driveFileId.slice(0,12) + '...' : 'Sin archivo';
-  const folderId = state.driveFolderId ? state.driveFolderId.slice(0,12) + '...' : 'Sin carpeta';
+  const connected = window._fbReady ? '✓ Firebase OK' : '✗ Sin conexión';
   const movs = state.movs.length;
   const last = state.movs.length > 0 ? relTime(state.movs[state.movs.length-1].ts) : 'ninguno';
   alert(
-    'ESTADO DRIVE\n' +
+    'ESTADO SYNC\n' +
     '─────────────\n' +
-    'Conexión: ' + connected + '\n' +
-    'Archivo ID: ' + fileId + '\n' +
-    'Carpeta ID: ' + folderId + '\n' +
+    'Firebase: ' + connected + '\n' +
     'Movimientos: ' + movs + '\n' +
-    'Último mov: ' + last
+    'Último: ' + last
   );
 }
 
