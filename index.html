@@ -1589,6 +1589,14 @@ function micTouchStart(e) {
     return;
   }
 
+  // iOS Safari blocks SpeechRecognition in browser tab — must be PWA
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const isPWA = window.navigator.standalone === true;
+  if (isIOS && !isPWA) {
+    showToast('Instala como PWA: Safari → Compartir → Añadir a inicio', 'err');
+    return;
+  }
+
   ptActive = true;
   ptHasResult = false;
   document.getElementById('micBtn').classList.add('active');
@@ -1596,7 +1604,8 @@ function micTouchStart(e) {
 
   // Create fresh instance every time — iOS requires this
   ptrec = new SR();
-  ptrec.lang = 'es-ES';
+  // iOS Safari is picky about lang codes — use device locale first
+  ptrec.lang = navigator.language || 'es-ES';
   ptrec.continuous = false;
   ptrec.interimResults = false;
   ptrec.maxAlternatives = 3;
@@ -1617,7 +1626,9 @@ function micTouchStart(e) {
     if (ev.error === 'not-allowed') {
       showToast('Permiso denegado — Ajustes > Safari > Micrófono', 'err');
     } else if (ev.error === 'service-not-allowed') {
-      showToast('Activa Dictado en Ajustes > General > Teclado', 'err');
+      // On iOS this fires even with Dictation ON when opened in browser tab
+      // Solution: install as PWA (Add to Home Screen)
+      showToast('Instala la app: Safari → Compartir → Añadir a inicio', 'err');
     } else if (ev.error === 'no-speech') {
       showToast('No te escuché — inténtalo de nuevo', 'err');
     } else if (ev.error === 'network') {
@@ -1808,24 +1819,29 @@ if (localStorage.getItem('setup_done')) {
 
 /* ── DIAGNOSTIC — pulse "?" next to mic ─────────────── */
 function diagMic() {
-  const lines = [];
-  const SRavail = window.SpeechRecognition || window.webkitSpeechRecognition;
-  lines.push(SRavail ? '✓ SpeechRecognition OK' : '✗ SpeechRecognition NO disponible');
+  const SRavail = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  const isPWA = window.navigator.standalone === true;
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+  if (isIOS && !isPWA) {
+    showToast('⚠️ En Safari el mic no funciona — instala como PWA primero', 'err');
+    return;
+  }
+
+  if (!SRavail) {
+    showToast('✗ SpeechRecognition no disponible en este navegador', 'err');
+    return;
+  }
 
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(s => {
         s.getTracks().forEach(t => t.stop());
-        lines.push('✓ Permiso micrófono OK');
-        showToast(lines.join(' · '), SRavail ? 'ok' : 'err');
+        showToast('✓ Micrófono OK' + (isPWA ? ' (PWA)' : ' (Safari)'), 'ok');
       })
       .catch(err => {
-        lines.push('✗ Micrófono: ' + err.name);
-        showToast(lines.join(' · '), 'err');
+        showToast('✗ Micrófono denegado: ' + err.name, 'err');
       });
-  } else {
-    lines.push('✗ getUserMedia no disponible');
-    showToast(lines.join(' · '), 'err');
   }
 }
 </script>
