@@ -273,8 +273,12 @@ cursor: pointer; transition: transform 0.12s, opacity 0.12s;
 
 .btn-accion.cta {
 grid-column: span 2; flex-direction: row; align-items: center;
-padding: 20px 22px; background: var(–accent); border-color: var(–accent);
+padding: 20px 22px; background: #c8f04a !important; border-color: #c8f04a !important;
 box-shadow: 0 4px 24px rgba(200,240,74,0.25);
+}
+
+.btn-accion.cta .btn-title, .btn-accion.cta .btn-sub, .btn-accion.cta * {
+color: #08080e !important;
 }
 
 .btn-icon {
@@ -1941,6 +1945,7 @@ function startDirectListening(e) {
   };
 
   ptRecognition.onend = () => {
+    playBeep(660, 0.12, 0.3);
     ptActive = false;
     resetMicBtn();
   };
@@ -1951,7 +1956,6 @@ function startDirectListening(e) {
 
 function stopDirectListening(e) {
   if (e) e.preventDefault();
-  playBeep(660, 0.12, 0.3);
   if (ptRecognition) {
     try { ptRecognition.stop(); } catch(e) {}
   }
