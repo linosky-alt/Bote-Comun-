@@ -1326,8 +1326,8 @@ function refreshDate() {
   const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
   const mes  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const mesC = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  document.getElementById('heroDate').textContent   = `€{dias[now.getDay()]}, €{now.getDate()} de €{mes[now.getMonth()]}`;
-  document.getElementById('statPeriod').textContent = `€{mesC[now.getMonth()]} €{now.getFullYear()}`;
+  document.getElementById('heroDate').textContent   = `${dias[now.getDay()]}, ${now.getDate()} de ${mes[now.getMonth()]}`;
+  document.getElementById('statPeriod').textContent = `${mesC[now.getMonth()]} ${now.getFullYear()}`;
 }
 
 /* ── SCREENS ────────────────────────────────────────── */
@@ -1455,10 +1455,10 @@ function renderMain() {
     miniEl.innerHTML = gastos.map(m => `
       <div class="mini-hist-row">
         <span class="mini-name">
-          €{CAT_ICONS_SVG[m.categoria] || CAT_ICONS_SVG.Otros}
-          €{m.categoria}
+          ${CAT_ICONS_SVG[m.categoria] || CAT_ICONS_SVG.Otros}
+          ${m.categoria}
         </span>
-        <span class="mini-val neg">€{fmt(m.importe)}</span>
+        <span class="mini-val neg">${fmt(m.importe)}</span>
       </div>`).join('');
   } else {
     miniEl.innerHTML = `<div class="mini-hist-row"><span class="mini-name" style="color:var(--text-dim)">Sin gastos aún</span></div>`;
@@ -1486,50 +1486,50 @@ function renderStats() {
   const mx = Math.max(...wt, ...we, 1);
   document.getElementById('weekBars').innerHTML = ['S1','S2','S3','S4','S5'].map((s, i) => {
     const th = Math.round((wt[i]/mx)*80), eh = Math.round((we[i]/mx)*80);
-    return `<div class="bar-col"><div class="bar-stack">€{th>0?`<div class="bar t" style="height:€{th}px"></div>`:''}€{eh>0?`<div class="bar e" style="height:€{eh}px"></div>`:''}</div><div class="bar-col-label">€{s}</div></div>`;
+    return `<div class="bar-col"><div class="bar-stack">${th>0?`<div class="bar t" style="height:${th}px"></div>`:''}${eh>0?`<div class="bar e" style="height:${eh}px"></div>`:''}</div><div class="bar-col-label">${s}</div></div>`;
   }).join('');
 
   const cats = {}; let tot = 0;
   state.movs.forEach(m => { if (m.tipo !== 'gasto') return; cats[m.categoria] = (cats[m.categoria]||0) + m.importe; tot += m.importe; });
   const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]);
   document.getElementById('catRows').innerHTML = sorted.length
-    ? sorted.map(([c,v]) => { const pct = tot > 0 ? Math.round((v/tot)*100) : 0; return `<div class="cat-row"><div class="cat-name">€{c}</div><div class="cat-track"><div class="cat-fill" style="width:€{pct}%;background:€{CAT_COLS[c]||'#888'}"></div></div><div class="cat-pct">€{pct}%</div></div>`; }).join('')
+    ? sorted.map(([c,v]) => { const pct = tot > 0 ? Math.round((v/tot)*100) : 0; return `<div class="cat-row"><div class="cat-name">${c}</div><div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${CAT_COLS[c]||'#888'}"></div></div><div class="cat-pct">${pct}%</div></div>`; }).join('')
     : '<div style="font-size:12px;color:var(--text-dim);padding:8px 0">Sin gastos aún</div>';
 
   const { apLino, apArantxa } = calcBalances();
   document.getElementById('apRows').innerHTML = `
     <div class="mov" style="border-bottom:1px solid var(--border)">
-      <div class="mov-icon-box">€{CAT_ICONS_SVG.Aportación}</div>
+      <div class="mov-icon-box">${CAT_ICONS_SVG.Aportación}</div>
       <div class="mov-info"><div class="mov-cat">Lino</div><div class="mov-meta">Aportaciones totales</div></div>
-      <div class="mov-right"><div class="mov-amount pos">€{fmt(apLino)}</div></div>
+      <div class="mov-right"><div class="mov-amount pos">${fmt(apLino)}</div></div>
     </div>
     <div class="mov">
-      <div class="mov-icon-box">€{CAT_ICONS_SVG.Aportación}</div>
+      <div class="mov-icon-box">${CAT_ICONS_SVG.Aportación}</div>
       <div class="mov-info"><div class="mov-cat">Arantxa</div><div class="mov-meta">Aportaciones totales</div></div>
-      <div class="mov-right"><div class="mov-amount pos">€{fmt(apArantxa)}</div></div>
+      <div class="mov-right"><div class="mov-amount pos">${fmt(apArantxa)}</div></div>
     </div>`;
 }
 
 function movHTML(m, showDelete = false) {
   const isAp = m.tipo === 'aportacion';
   const icon = CAT_ICONS_SVG[m.categoria] || CAT_ICONS_SVG.Otros;
-  const meta = [m.quien, relTime(m.ts), m.nota ? `"€{m.nota}"` : null].filter(Boolean).join(' · ');
+  const meta = [m.quien, relTime(m.ts), m.nota ? `"${m.nota}"` : null].filter(Boolean).join(' · ');
   const delBtn = showDelete ? `
-    <button onclick="askDelMov(€{m.id})" style="
+    <button onclick="askDelMov(${m.id})" style="
       margin-top:6px; background:var(--red-dim); border:1px solid rgba(255,107,107,0.25);
       border-radius:8px; padding:3px 9px; font-size:10px; font-weight:700;
       color:var(--red); cursor:pointer; letter-spacing:0.05em; display:block; width:100%;
     ">Eliminar</button>` : '';
   return `<div class="mov">
-    <div class="mov-icon-box">€{icon}</div>
+    <div class="mov-icon-box">${icon}</div>
     <div class="mov-info">
-      <div class="mov-cat">€{m.categoria} <span class="tag €{isAp?'a':'g'}">€{isAp?'entrada':'gasto'}</span></div>
-      <div class="mov-meta">€{meta}</div>
+      <div class="mov-cat">${m.categoria} <span class="tag ${isAp?'a':'g'}">${isAp?'entrada':'gasto'}</span></div>
+      <div class="mov-meta">${meta}</div>
     </div>
     <div class="mov-right">
-      <div class="mov-amount €{isAp?'pos':''}">€{isAp?'+':'−'}€{fmt(m.importe)}</div>
-      <div class="mov-fondo €{m.fondo==='tarjeta'?'t':'e'}">€{m.fondo==='tarjeta'?'Tarjeta':'Efectivo'}</div>
-      €{delBtn}
+      <div class="mov-amount ${isAp?'pos':''}">${isAp?'+':'−'}${fmt(m.importe)}</div>
+      <div class="mov-fondo ${m.fondo==='tarjeta'?'t':'e'}">${m.fondo==='tarjeta'?'Tarjeta':'Efectivo'}</div>
+      ${delBtn}
     </div>
   </div>`;
 }
@@ -1537,10 +1537,10 @@ function movHTML(m, showDelete = false) {
 function relTime(ts) {
   const d = Date.now()-ts, m = Math.floor(d/60000), h = Math.floor(m/60), dy = Math.floor(h/24);
   if (m < 1) return 'ahora';
-  if (m < 60) return `hace €{m}m`;
-  if (h < 24) return `hace €{h}h`;
+  if (m < 60) return `hace ${m}m`;
+  if (h < 24) return `hace ${h}h`;
   if (dy === 1) return 'ayer';
-  return `hace €{dy}d`;
+  return `hace ${dy}d`;
 }
 
 /* ── MODALS ─────────────────────────────────────────── */
@@ -1573,7 +1573,7 @@ function selAp(el, who) {
   el.className = 'pill sel-green';
   const fondo = who==='Lino' ? 'efectivo' : 'tarjeta';
   resetPills('ap-fondos');
-  const fp = document.querySelector(`#ap-fondos .pill[data-v="€{fondo}"]`);
+  const fp = document.querySelector(`#ap-fondos .pill[data-v="${fondo}"]`);
   if (fp) fp.className = fondo==='tarjeta' ? 'pill sel-purple' : 'pill sel-green';
 }
 
@@ -1625,13 +1625,13 @@ function askDelMov(id) {
   const preview = document.getElementById('del-mov-preview');
   preview.innerHTML = `
     <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">
-      €{m.categoria} <span style="font-family:'Space Grotesk';font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:€{isAp?'var(--lime-dim)':'var(--red-dim)'};color:€{isAp?'var(--lime)':'var(--red)'};">€{isAp?'entrada':'gasto'}</span>
+      ${m.categoria} <span style="font-family:'Space Grotesk';font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:${isAp?'var(--lime-dim)':'var(--red-dim)'};color:${isAp?'var(--lime)':'var(--red)'};">${isAp?'entrada':'gasto'}</span>
     </div>
-    <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:€{isAp?'var(--lime)':'var(--red)'};">
-      €{isAp?'+':'−'}€{fmt(m.importe)}
+    <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:${isAp?'var(--lime)':'var(--red)'};">
+      ${isAp?'+':'−'}${fmt(m.importe)}
     </div>
     <div style="font-size:12px;color:var(--text-mid);margin-top:5px;">
-      €{[m.quien, m.fondo==='tarjeta'?'Tarjeta':'Efectivo', relTime(m.ts)].filter(Boolean).join(' · ')}
+      ${[m.quien, m.fondo==='tarjeta'?'Tarjeta':'Efectivo', relTime(m.ts)].filter(Boolean).join(' · ')}
     </div>`;
   document.getElementById('ov-del-mov').classList.add('open');
 }
@@ -1870,9 +1870,9 @@ async function syncDrive() {
 async function saveToDrive() {
   if (!state.driveConnected || !state.driveFileId) return;
   try {
-    await fetch(`https://www.googleapis.com/upload/drive/v3/files/€{state.driveFileId}?uploadType=media`, {
+    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${state.driveFileId}?uploadType=media`, {
       method: 'PATCH',
-      headers: { Authorization: `Bearer €{state.driveToken}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${state.driveToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ movs: state.movs, updated: Date.now() })
     });
     setSyncBar('ok', 'Sincronizado · ' + nowTime());
@@ -1880,24 +1880,24 @@ async function saveToDrive() {
 }
 
 async function loadDrive(id) {
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files/€{id}?alt=media`, { headers: { Authorization: `Bearer €{state.driveToken}` } });
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
   const d = await r.json();
   if (d.movs) { state.movs = d.movs; renderAll(); }
 }
 
 async function findFolder() {
   const q = encodeURIComponent(`name='Bote Común' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=€{q}&fields=files(id)`, { headers: { Authorization: `Bearer €{state.driveToken}` } });
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
   const d = await r.json();
   return d.files && d.files[0] ? d.files[0].id : null;
 }
 async function createFolder() {
-  const r = await fetch('https://www.googleapis.com/drive/v3/files', { method: 'POST', headers: { Authorization: `Bearer €{state.driveToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Bote Común', mimeType: 'application/vnd.google-apps.folder' }) });
+  const r = await fetch('https://www.googleapis.com/drive/v3/files', { method: 'POST', headers: { Authorization: `Bearer ${state.driveToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Bote Común', mimeType: 'application/vnd.google-apps.folder' }) });
   return (await r.json()).id;
 }
 async function findFile(fid) {
-  const q = encodeURIComponent(`name='bote_data.json' and '€{fid}' in parents and trashed=false`);
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=€{q}&fields=files(id)`, { headers: { Authorization: `Bearer €{state.driveToken}` } });
+  const q = encodeURIComponent(`name='bote_data.json' and '${fid}' in parents and trashed=false`);
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
   const d = await r.json();
   return d.files && d.files[0] ? d.files[0].id : null;
 }
@@ -1907,7 +1907,7 @@ async function createFile(fid) {
   const form = new FormData();
   form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
   form.append('file', new Blob([body], { type: 'application/json' }));
-  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', { method: 'POST', headers: { Authorization: `Bearer €{state.driveToken}` }, body: form });
+  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', { method: 'POST', headers: { Authorization: `Bearer ${state.driveToken}` }, body: form });
   return (await r.json()).id;
 }
 
