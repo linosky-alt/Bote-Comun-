@@ -166,7 +166,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   padding: 16px 18px;
 }
 .pb-hero-tag {
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -190,7 +190,7 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 }
 .pb-hero-date {
   margin-top: 8px;
-  font-size: 12px;
+  font-size: 13.8px;
   color: rgba(15,15,15,0.45);
 }
 
@@ -306,11 +306,11 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   grid-column: span 2;
 }
 .pb-mini-title {
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: #ecfccb;
   margin-bottom: 10px;
 }
 .mini-hist-row {
@@ -353,12 +353,10 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 }
 .pb-balance-val {
   font-family: 'Unbounded', sans-serif;
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 700;
   color: #0f0f0f;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  line-height: 1.2;
 }
 
 /* gastos mes */
@@ -988,20 +986,30 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
   <div class="pb-actions-row">
     <div class="pb-action" onclick="openModal('aportacion')">
       <div class="pb-action-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C9 2 6 4 6 7v1H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2V7c0-3-3-5-6-5z"/>
+          <path d="M9 7c0-1.7 1.3-3 3-3s3 1.3 3 3v1H9V7z"/>
+          <text x="12" y="17" text-anchor="middle" font-size="7" font-weight="700" fill="var(--purple)" stroke="none" font-family="sans-serif">€</text>
+        </svg>
       </div>
       <div>
         <div class="pb-action-title">Aportar</div>
-        <div class="pb-action-sub">Meter dinero al bote</div>
+        <div class="pb-action-sub" style="color:#aaa;">Meter dinero al bote</div>
       </div>
     </div>
     <div class="pb-action" onclick="showScreen('stats')">
       <div class="pb-action-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="7" width="4" height="14"/><rect x="17" y="3" width="4" height="18"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="12" width="3" height="8" fill="none" stroke="var(--lime)" stroke-width="1.8"/>
+          <rect x="10" y="7" width="3" height="13" fill="none" stroke="var(--lime)" stroke-width="1.8"/>
+          <rect x="17" y="4" width="3" height="16" fill="none" stroke="var(--lime)" stroke-width="1.8"/>
+          <polyline points="4,10 9,5 14,8 20,2" stroke="var(--yellow)" stroke-width="2" fill="none"/>
+          <polyline points="17,2 20,2 20,5" stroke="var(--yellow)" stroke-width="2" fill="none"/>
+        </svg>
       </div>
       <div>
         <div class="pb-action-title">Estadísticas</div>
-        <div class="pb-action-sub">Ver resumen del mes</div>
+        <div class="pb-action-sub" style="color:#aaa;">Ver resumen del mes</div>
       </div>
     </div>
   </div>
@@ -1221,6 +1229,25 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 </div>
 
 <!-- ══════════════════════════════════════
+     MODAL CONFIRM DELETE MOV
+══════════════════════════════════════ -->
+
+<div class="modal-overlay" id="ov-del-mov">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="text-align:center">
+      <div class="modal-title" style="text-align:center">Eliminar movimiento</div>
+      <div id="del-mov-preview" style="background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:14px 16px;margin-bottom:18px;text-align:left;"></div>
+      <p style="font-size:14px;color:var(--text-mid);margin-bottom:22px;line-height:1.6">Este movimiento se eliminará y los saldos se recalcularán. No se puede deshacer.</p>
+      <div style="display:flex;gap:9px">
+        <button class="btn-cancel" style="margin:0;flex:1" onclick="closeModal('ov-del-mov')">Cancelar</button>
+        <button class="btn-submit danger" style="margin:0;flex:1" onclick="confirmDelMov()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
      JS
 ══════════════════════════════════════ -->
 
@@ -1230,14 +1257,14 @@ const CLIENT_ID = '1058462747472-2noea70hh89a0drck7dit8kpnuq9mq64.apps.googleuse
 const SCOPE = 'https://www.googleapis.com/auth/drive.file';
 
 const CAT_ICONS_SVG = {
-  Supermercado: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
-  Restaurante:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
-  Hogar:        `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>`,
-  Gasolina:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><line x1="3" y1="22" x2="15" y2="22"/><path d="M15 9h2a2 2 0 0 1 2 2v5a2 2 0 0 0 4 0V8l-3-3"/></svg>`,
-  Ocio:         `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
-  Viajes:       `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.16 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16l.92.92z"/></svg>`,
-  Otros:        `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-mid)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>`,
-  Aportación:   `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+  Supermercado: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+  Restaurante:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fda4af" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+  Hogar:        `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><polyline points="9 21 9 12 15 12 15 21"/></svg>`,
+  Gasolina:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fde047" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><line x1="3" y1="22" x2="15" y2="22"/><path d="M15 9h2a2 2 0 0 1 2 2v5a2 2 0 0 0 4 0V8l-3-3"/></svg>`,
+  Ocio:         `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+  Viajes:       `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.16 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16l.92.92z"/></svg>`,
+  Otros:        `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>`,
+  Aportación:   `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
 };
 
 const CAT_COLS = {
@@ -1299,8 +1326,8 @@ function refreshDate() {
   const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
   const mes  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   const mesC = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  document.getElementById('heroDate').textContent   = `${dias[now.getDay()]}, ${now.getDate()} de ${mes[now.getMonth()]}`;
-  document.getElementById('statPeriod').textContent = `${mesC[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('heroDate').textContent   = `€{dias[now.getDay()]}, €{now.getDate()} de €{mes[now.getMonth()]}`;
+  document.getElementById('statPeriod').textContent = `€{mesC[now.getMonth()]} €{now.getFullYear()}`;
 }
 
 /* ── SCREENS ────────────────────────────────────────── */
@@ -1388,23 +1415,30 @@ function renderMain() {
     desc.textContent = 'Los dos aportáis lo mismo';
     amt.textContent  = '€0';
     if (balEl) balEl.textContent = '✓ Ok';
-    if (balCard) balCard.style.background = 'var(--yellow)';
+    if (balCard) { balCard.style.background = 'var(--yellow)'; balCard.style.color = '#0f0f0f'; }
+    const balTagOk = balCard ? balCard.querySelector('.pb-balance-tag') : null;
+    if (balTagOk) balTagOk.style.color = 'rgba(15,15,15,0.5)';
   } else if (diff > 0) {
     banner.className = 'pb-ajuste';
     ico.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
     ttl.textContent  = 'Ajuste pendiente';
     desc.textContent = 'Lino debe igualar';
     amt.textContent  = fmt(diff);
-    if (balEl) balEl.textContent = 'Lino −' + fmt(diff);
-    if (balCard) balCard.style.background = '#fda4af';
+    if (balEl) balEl.innerHTML = '👎 Lino −' + fmt(diff);
+    if (balCard) { balCard.style.background = 'var(--red)'; balCard.style.color = '#fff'; }
+    // Update text colors inside card for red bg
+    const balTag1 = balCard ? balCard.querySelector('.pb-balance-tag') : null;
+    if (balTag1) balTag1.style.color = 'rgba(255,255,255,0.6)';
   } else {
     banner.className = 'pb-ajuste';
     ico.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
     ttl.textContent  = 'Ajuste pendiente';
     desc.textContent = 'Arantxa debe igualar';
     amt.textContent  = fmt(Math.abs(diff));
-    if (balEl) balEl.textContent = 'Arantxa −' + fmt(Math.abs(diff));
-    if (balCard) balCard.style.background = '#fda4af';
+    if (balEl) balEl.innerHTML = '👎 Arantxa −' + fmt(Math.abs(diff));
+    if (balCard) { balCard.style.background = 'var(--red)'; balCard.style.color = '#fff'; }
+    const balTag2 = balCard ? balCard.querySelector('.pb-balance-tag') : null;
+    if (balTag2) balTag2.style.color = 'rgba(255,255,255,0.6)';
   }
 
   // Main movs (last 5)
@@ -1421,10 +1455,10 @@ function renderMain() {
     miniEl.innerHTML = gastos.map(m => `
       <div class="mini-hist-row">
         <span class="mini-name">
-          ${CAT_ICONS_SVG[m.categoria] || CAT_ICONS_SVG.Otros}
-          ${m.categoria}
+          €{CAT_ICONS_SVG[m.categoria] || CAT_ICONS_SVG.Otros}
+          €{m.categoria}
         </span>
-        <span class="mini-val neg">${fmt(m.importe)}</span>
+        <span class="mini-val neg">€{fmt(m.importe)}</span>
       </div>`).join('');
   } else {
     miniEl.innerHTML = `<div class="mini-hist-row"><span class="mini-name" style="color:var(--text-dim)">Sin gastos aún</span></div>`;
@@ -1435,7 +1469,7 @@ function renderHistorial() {
   const el = document.getElementById('allMovs');
   const all = [...state.movs].reverse();
   el.innerHTML = all.length
-    ? all.map(movHTML).join('')
+    ? all.map(m => movHTML(m, true)).join('')
     : `<div class="empty-state"><div class="empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>Sin movimientos aún</div>`;
 }
 
@@ -1452,43 +1486,50 @@ function renderStats() {
   const mx = Math.max(...wt, ...we, 1);
   document.getElementById('weekBars').innerHTML = ['S1','S2','S3','S4','S5'].map((s, i) => {
     const th = Math.round((wt[i]/mx)*80), eh = Math.round((we[i]/mx)*80);
-    return `<div class="bar-col"><div class="bar-stack">${th>0?`<div class="bar t" style="height:${th}px"></div>`:''}${eh>0?`<div class="bar e" style="height:${eh}px"></div>`:''}</div><div class="bar-col-label">${s}</div></div>`;
+    return `<div class="bar-col"><div class="bar-stack">€{th>0?`<div class="bar t" style="height:€{th}px"></div>`:''}€{eh>0?`<div class="bar e" style="height:€{eh}px"></div>`:''}</div><div class="bar-col-label">€{s}</div></div>`;
   }).join('');
 
   const cats = {}; let tot = 0;
   state.movs.forEach(m => { if (m.tipo !== 'gasto') return; cats[m.categoria] = (cats[m.categoria]||0) + m.importe; tot += m.importe; });
   const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]);
   document.getElementById('catRows').innerHTML = sorted.length
-    ? sorted.map(([c,v]) => { const pct = tot > 0 ? Math.round((v/tot)*100) : 0; return `<div class="cat-row"><div class="cat-name">${c}</div><div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${CAT_COLS[c]||'#888'}"></div></div><div class="cat-pct">${pct}%</div></div>`; }).join('')
+    ? sorted.map(([c,v]) => { const pct = tot > 0 ? Math.round((v/tot)*100) : 0; return `<div class="cat-row"><div class="cat-name">€{c}</div><div class="cat-track"><div class="cat-fill" style="width:€{pct}%;background:€{CAT_COLS[c]||'#888'}"></div></div><div class="cat-pct">€{pct}%</div></div>`; }).join('')
     : '<div style="font-size:12px;color:var(--text-dim);padding:8px 0">Sin gastos aún</div>';
 
   const { apLino, apArantxa } = calcBalances();
   document.getElementById('apRows').innerHTML = `
     <div class="mov" style="border-bottom:1px solid var(--border)">
-      <div class="mov-icon-box">${CAT_ICONS_SVG.Aportación}</div>
+      <div class="mov-icon-box">€{CAT_ICONS_SVG.Aportación}</div>
       <div class="mov-info"><div class="mov-cat">Lino</div><div class="mov-meta">Aportaciones totales</div></div>
-      <div class="mov-right"><div class="mov-amount pos">${fmt(apLino)}</div></div>
+      <div class="mov-right"><div class="mov-amount pos">€{fmt(apLino)}</div></div>
     </div>
     <div class="mov">
-      <div class="mov-icon-box">${CAT_ICONS_SVG.Aportación}</div>
+      <div class="mov-icon-box">€{CAT_ICONS_SVG.Aportación}</div>
       <div class="mov-info"><div class="mov-cat">Arantxa</div><div class="mov-meta">Aportaciones totales</div></div>
-      <div class="mov-right"><div class="mov-amount pos">${fmt(apArantxa)}</div></div>
+      <div class="mov-right"><div class="mov-amount pos">€{fmt(apArantxa)}</div></div>
     </div>`;
 }
 
-function movHTML(m) {
+function movHTML(m, showDelete = false) {
   const isAp = m.tipo === 'aportacion';
   const icon = CAT_ICONS_SVG[m.categoria] || CAT_ICONS_SVG.Otros;
-  const meta = [m.quien, relTime(m.ts), m.nota ? `"${m.nota}"` : null].filter(Boolean).join(' · ');
+  const meta = [m.quien, relTime(m.ts), m.nota ? `"€{m.nota}"` : null].filter(Boolean).join(' · ');
+  const delBtn = showDelete ? `
+    <button onclick="askDelMov(€{m.id})" style="
+      margin-top:6px; background:var(--red-dim); border:1px solid rgba(255,107,107,0.25);
+      border-radius:8px; padding:3px 9px; font-size:10px; font-weight:700;
+      color:var(--red); cursor:pointer; letter-spacing:0.05em; display:block; width:100%;
+    ">Eliminar</button>` : '';
   return `<div class="mov">
-    <div class="mov-icon-box">${icon}</div>
+    <div class="mov-icon-box">€{icon}</div>
     <div class="mov-info">
-      <div class="mov-cat">${m.categoria} <span class="tag ${isAp?'a':'g'}">${isAp?'entrada':'gasto'}</span></div>
-      <div class="mov-meta">${meta}</div>
+      <div class="mov-cat">€{m.categoria} <span class="tag €{isAp?'a':'g'}">€{isAp?'entrada':'gasto'}</span></div>
+      <div class="mov-meta">€{meta}</div>
     </div>
     <div class="mov-right">
-      <div class="mov-amount ${isAp?'pos':''}">${isAp?'+':'−'}${fmt(m.importe)}</div>
-      <div class="mov-fondo ${m.fondo==='tarjeta'?'t':'e'}">${m.fondo==='tarjeta'?'Tarjeta':'Efectivo'}</div>
+      <div class="mov-amount €{isAp?'pos':''}">€{isAp?'+':'−'}€{fmt(m.importe)}</div>
+      <div class="mov-fondo €{m.fondo==='tarjeta'?'t':'e'}">€{m.fondo==='tarjeta'?'Tarjeta':'Efectivo'}</div>
+      €{delBtn}
     </div>
   </div>`;
 }
@@ -1496,10 +1537,10 @@ function movHTML(m) {
 function relTime(ts) {
   const d = Date.now()-ts, m = Math.floor(d/60000), h = Math.floor(m/60), dy = Math.floor(h/24);
   if (m < 1) return 'ahora';
-  if (m < 60) return `hace ${m}m`;
-  if (h < 24) return `hace ${h}h`;
+  if (m < 60) return `hace €{m}m`;
+  if (h < 24) return `hace €{h}h`;
   if (dy === 1) return 'ayer';
-  return `hace ${dy}d`;
+  return `hace €{dy}d`;
 }
 
 /* ── MODALS ─────────────────────────────────────────── */
@@ -1532,7 +1573,7 @@ function selAp(el, who) {
   el.className = 'pill sel-green';
   const fondo = who==='Lino' ? 'efectivo' : 'tarjeta';
   resetPills('ap-fondos');
-  const fp = document.querySelector(`#ap-fondos .pill[data-v="${fondo}"]`);
+  const fp = document.querySelector(`#ap-fondos .pill[data-v="€{fondo}"]`);
   if (fp) fp.className = fondo==='tarjeta' ? 'pill sel-purple' : 'pill sel-green';
 }
 
@@ -1571,6 +1612,38 @@ function doReset() {
   localStorage.setItem('bote_archive', JSON.stringify(arc));
   state.movs = [];
   persist(); closeModal('ov-confirm'); showToast('Historial archivado', 'ok');
+}
+
+/* ── ELIMINAR MOVIMIENTO INDIVIDUAL ──── */
+let delMovId = null;
+
+function askDelMov(id) {
+  delMovId = id;
+  const m = state.movs.find(x => x.id === id);
+  if (!m) return;
+  const isAp = m.tipo === 'aportacion';
+  const preview = document.getElementById('del-mov-preview');
+  preview.innerHTML = `
+    <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">
+      €{m.categoria} <span style="font-family:'Space Grotesk';font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:€{isAp?'var(--lime-dim)':'var(--red-dim)'};color:€{isAp?'var(--lime)':'var(--red)'};">€{isAp?'entrada':'gasto'}</span>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:€{isAp?'var(--lime)':'var(--red)'};">
+      €{isAp?'+':'−'}€{fmt(m.importe)}
+    </div>
+    <div style="font-size:12px;color:var(--text-mid);margin-top:5px;">
+      €{[m.quien, m.fondo==='tarjeta'?'Tarjeta':'Efectivo', relTime(m.ts)].filter(Boolean).join(' · ')}
+    </div>`;
+  document.getElementById('ov-del-mov').classList.add('open');
+}
+
+function confirmDelMov() {
+  if (!delMovId) return;
+  state.movs = state.movs.filter(m => m.id !== delMovId);
+  delMovId = null;
+  persist();
+  closeModal('ov-del-mov');
+  renderHistorial();
+  showToast('Movimiento eliminado', 'ok');
 }
 
 /* ── VOICE — iOS Safari compatible ─────────────────── */
@@ -1797,9 +1870,9 @@ async function syncDrive() {
 async function saveToDrive() {
   if (!state.driveConnected || !state.driveFileId) return;
   try {
-    await fetch(`https://www.googleapis.com/upload/drive/v3/files/${state.driveFileId}?uploadType=media`, {
+    await fetch(`https://www.googleapis.com/upload/drive/v3/files/€{state.driveFileId}?uploadType=media`, {
       method: 'PATCH',
-      headers: { Authorization: `Bearer ${state.driveToken}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer €{state.driveToken}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ movs: state.movs, updated: Date.now() })
     });
     setSyncBar('ok', 'Sincronizado · ' + nowTime());
@@ -1807,24 +1880,24 @@ async function saveToDrive() {
 }
 
 async function loadDrive(id) {
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files/€{id}?alt=media`, { headers: { Authorization: `Bearer €{state.driveToken}` } });
   const d = await r.json();
   if (d.movs) { state.movs = d.movs; renderAll(); }
 }
 
 async function findFolder() {
   const q = encodeURIComponent(`name='Bote Común' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=€{q}&fields=files(id)`, { headers: { Authorization: `Bearer €{state.driveToken}` } });
   const d = await r.json();
   return d.files && d.files[0] ? d.files[0].id : null;
 }
 async function createFolder() {
-  const r = await fetch('https://www.googleapis.com/drive/v3/files', { method: 'POST', headers: { Authorization: `Bearer ${state.driveToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Bote Común', mimeType: 'application/vnd.google-apps.folder' }) });
+  const r = await fetch('https://www.googleapis.com/drive/v3/files', { method: 'POST', headers: { Authorization: `Bearer €{state.driveToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Bote Común', mimeType: 'application/vnd.google-apps.folder' }) });
   return (await r.json()).id;
 }
 async function findFile(fid) {
-  const q = encodeURIComponent(`name='bote_data.json' and '${fid}' in parents and trashed=false`);
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)`, { headers: { Authorization: `Bearer ${state.driveToken}` } });
+  const q = encodeURIComponent(`name='bote_data.json' and '€{fid}' in parents and trashed=false`);
+  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=€{q}&fields=files(id)`, { headers: { Authorization: `Bearer €{state.driveToken}` } });
   const d = await r.json();
   return d.files && d.files[0] ? d.files[0].id : null;
 }
@@ -1834,7 +1907,7 @@ async function createFile(fid) {
   const form = new FormData();
   form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
   form.append('file', new Blob([body], { type: 'application/json' }));
-  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', { method: 'POST', headers: { Authorization: `Bearer ${state.driveToken}` }, body: form });
+  const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', { method: 'POST', headers: { Authorization: `Bearer €{state.driveToken}` }, body: form });
   return (await r.json()).id;
 }
 
