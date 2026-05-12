@@ -1100,8 +1100,11 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 
 <div class="mic-wrap" id="micWrap">
   <div class="mic-btn" id="micBtn"
-    onmousedown="ptStart(event)" ontouchstart="ptStart(event)"
-    onmouseup="ptStop(event)" ontouchend="ptStop(event)" onmouseleave="ptStop(event)">
+    ontouchstart="micTouchStart(event)"
+    ontouchend="micTouchEnd(event)"
+    onmousedown="micTouchStart(event)"
+    onmouseup="micTouchEnd(event)"
+    onmouseleave="micTouchEnd(event)">
     <div class="mic-ring"></div>
     <div class="mic-ring2"></div>
     <svg width="24" height="24" viewBox="0 0 24 24" fill="#0a0a0a">
@@ -1264,12 +1267,27 @@ window.addEventListener('load', () => {
 
 function enterApp() {
   showScreen('main');
-  document.getElementById('micWrap').style.display = 'flex';
-  // Request mic permission early so iOS caches it
+
+  // Re-check SR availability after entering app
+  SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const micWrap = document.getElementById('micWrap');
+  if (SR) {
+    micWrap.style.display = 'flex';
+  } else {
+    // SpeechRecognition not available — hide mic entirely
+    micWrap.style.display = 'none';
+  }
+
+  // Request mic permission proactively so iOS shows dialog before first use
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(s => s.getTracks().forEach(t => t.stop()))
-      .catch(() => {});
+      .then(s => {
+        s.getTracks().forEach(t => t.stop());
+      })
+      .catch(err => {
+        // Permission denied — will show toast when user tries mic
+      });
   }
 }
 
@@ -1552,44 +1570,43 @@ function doReset() {
   persist(); closeModal('ov-confirm'); showToast('Historial archivado', 'ok');
 }
 
-/* ── VOICE (FIX: continuous:false, no overlap) ──────── */
-let ptrec = null, ptActive = false;
+/* ── VOICE — iOS Safari compatible ─────────────────── */
+// iOS Safari requires SpeechRecognition.start() called DIRECTLY
+// inside a user gesture handler (touchstart/touchend), with zero
+// async wrappers. Any setTimeout, await, or promise chain breaks it.
 
-function beep(f, d) {
-  try {
-    const c = new (window.AudioContext || window.webkitAudioContext)();
-    const o = c.createOscillator(), g = c.createGain();
-    o.connect(g); g.connect(c.destination);
-    o.frequency.value = f; o.type = 'sine';
-    g.gain.setValueAtTime(.25, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(.001, c.currentTime + d);
-    o.start(c.currentTime); o.stop(c.currentTime + d);
-  } catch(e) {}
-}
+let SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let ptrec = null;
+let ptActive = false;
+let ptHasResult = false;
 
-function ptStart(e) {
-  if (e) e.preventDefault();
+function micTouchStart(e) {
+  e.preventDefault();
+  e.stopPropagation();
   if (ptActive) return;
-
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
-    showToast('Reconocimiento de voz no disponible', 'err');
+    showToast('Voz no disponible en este navegador', 'err');
     return;
   }
 
   ptActive = true;
-  beep(880, .1);
+  ptHasResult = false;
   document.getElementById('micBtn').classList.add('active');
   document.getElementById('micLbl').textContent = 'Habla ahora...';
 
-  // Always create fresh instance (iOS requires this)
+  // Create fresh instance every time — iOS requires this
   ptrec = new SR();
   ptrec.lang = 'es-ES';
   ptrec.continuous = false;
   ptrec.interimResults = false;
-  ptrec.maxAlternatives = 1;
+  ptrec.maxAlternatives = 3;
+
+  ptrec.onstart = () => {
+    // confirmed started
+  };
 
   ptrec.onresult = (ev) => {
+    ptHasResult = true;
     const transcript = ev.results[0][0].transcript;
     voiceSave(transcript);
   };
@@ -1597,38 +1614,40 @@ function ptStart(e) {
   ptrec.onerror = (ev) => {
     ptActive = false;
     resetMicUI();
-    if (ev.error === 'not-allowed' || ev.error === 'permission-denied') {
-      showToast('Activa el micrófono en Ajustes > Safari', 'err');
+    if (ev.error === 'not-allowed') {
+      showToast('Permiso denegado — Ajustes > Safari > Micrófono', 'err');
+    } else if (ev.error === 'service-not-allowed') {
+      showToast('Activa Dictado en Ajustes > General > Teclado', 'err');
     } else if (ev.error === 'no-speech') {
-      showToast('No te escuché, inténtalo de nuevo', 'err');
-    } else if (ev.error === 'aborted') {
-      // Silently ignore (user released button)
-    } else {
-      showToast('Error de micrófono: ' + ev.error, 'err');
+      showToast('No te escuché — inténtalo de nuevo', 'err');
+    } else if (ev.error === 'network') {
+      showToast('Sin conexión para el reconocimiento de voz', 'err');
+    } else if (ev.error !== 'aborted') {
+      showToast('Error: ' + ev.error, 'err');
     }
   };
 
   ptrec.onend = () => {
     ptActive = false;
     resetMicUI();
-    beep(660, .08);
   };
 
+  // start() must be the last thing called, synchronously
   try {
     ptrec.start();
   } catch(err) {
-    // If already started (rare race), ignore
     ptActive = false;
     resetMicUI();
+    showToast('No se pudo iniciar — ' + err.message, 'err');
   }
 }
 
-function ptStop(e) {
-  if (e) e.preventDefault();
-  if (ptrec) {
+function micTouchEnd(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (ptrec && ptActive) {
     try { ptrec.stop(); } catch(err) {}
   }
-  // Don't reset ptActive here — let onend handle it cleanly
 }
 
 function resetMicUI() {
@@ -1785,6 +1804,29 @@ function showToast(msg, type) {
 // Skip setup if already done
 if (localStorage.getItem('setup_done')) {
   document.getElementById('screen-setup').classList.remove('active');
+}
+
+/* ── DIAGNOSTIC — pulse "?" next to mic ─────────────── */
+function diagMic() {
+  const lines = [];
+  const SRavail = window.SpeechRecognition || window.webkitSpeechRecognition;
+  lines.push(SRavail ? '✓ SpeechRecognition OK' : '✗ SpeechRecognition NO disponible');
+
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(s => {
+        s.getTracks().forEach(t => t.stop());
+        lines.push('✓ Permiso micrófono OK');
+        showToast(lines.join(' · '), SRavail ? 'ok' : 'err');
+      })
+      .catch(err => {
+        lines.push('✗ Micrófono: ' + err.name);
+        showToast(lines.join(' · '), 'err');
+      });
+  } else {
+    lines.push('✗ getUserMedia no disponible');
+    showToast(lines.join(' · '), 'err');
+  }
 }
 </script>
 
