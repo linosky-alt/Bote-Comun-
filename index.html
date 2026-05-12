@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bote Común">
+<meta name="color-scheme" content="dark">
 <title>Bote Común</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -140,8 +141,8 @@ font-weight:700;color:var(–mid);margin-bottom:6px;position:relative;z-index:1;
 font-family:‘JetBrains Mono’,monospace;font-weight:700;
 font-size:26px;letter-spacing:-.02em;line-height:1;position:relative;z-index:1;
 }
-.fondo.t .fondo-val{color:var(–purple)}
-.fondo.e .fondo-val{color:var(–accent)}
+.fondo.t .fondo-val{color:#8b7cf8 !important}
+.fondo.e .fondo-val{color:#c8f04a !important}
 .fondo-who{font-size:12px;font-weight:500;color:var(–mid);margin-top:5px;position:relative;z-index:1}
 
 /* ── AJUSTE BANNER ── */
@@ -369,10 +370,11 @@ backdrop-filter:blur(5px);
 }
 .overlay.on{display:flex}
 .modal{
-background:var(–s1);border:1px solid var(–border);
+background:#13131e !important;border:1px solid rgba(255,255,255,0.07);
 border-radius:28px 28px 0 0;padding:26px 22px 40px;
 width:100%;max-width:480px;
 animation:sup .3s cubic-bezier(.34,1.56,.64,1);
+color-scheme:dark;
 }
 @keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .m-handle{width:38px;height:4px;background:var(–s3);border-radius:2px;margin:0 auto 22px}
@@ -384,22 +386,24 @@ letter-spacing:.08em;color:var(–mid);margin-bottom:8px;display:block;
 }
 .flbl span{color:var(–dim);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px}
 .finput{
-width:100%;background:var(–s2);border:1.5px solid var(–border);
+width:100%;background:#1c1c2a !important;border:1.5px solid rgba(255,255,255,0.07);
 border-radius:14px;padding:14px 16px;
 font-family:‘JetBrains Mono’,monospace;font-size:18px;font-weight:700;
-color:var(–text);outline:none;transition:border-color .2s;
+color:#f2f2f8 !important;outline:none;transition:border-color .2s;
 -webkit-appearance:none;
+color-scheme:dark;
 }
 .finput:focus{border-color:var(–purple)}
 .finput.nota{font-family:‘DM Sans’,sans-serif;font-size:15px;font-weight:400}
+.finput::placeholder{color:#5a5a78}
 
 /* Pill grid for selections */
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
 .pgrid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pill{
-background:var(–s2);border:1.5px solid var(–border);
+background:#1c1c2a !important;border:1.5px solid rgba(255,255,255,0.07);
 border-radius:12px;padding:11px 8px;
-font-size:13px;font-weight:600;color:var(–mid);
+font-size:13px;font-weight:600;color:#a0a0c0 !important;
 cursor:pointer;text-align:center;transition:all .15s;
 -webkit-user-select:none;user-select:none;
 }
@@ -422,7 +426,7 @@ color:var(–red);
 
 .btn-main{
 width:100%;padding:17px;border-radius:16px;
-background:var(–accent);border:none;color:#08080e;
+background:#c8f04a !important;border:none;color:#08080e !important;
 font-family:‘Syne’,sans-serif;font-size:16px;font-weight:800;
 cursor:pointer;margin-top:8px;transition:opacity .15s;
 -webkit-appearance:none;
@@ -430,9 +434,10 @@ cursor:pointer;margin-top:8px;transition:opacity .15s;
 .btn-main:active{opacity:.8}
 .btn-cancel{
 width:100%;padding:13px;border-radius:16px;
-background:transparent;border:1px solid var(–border);color:var(–mid);
+background:#1c1c2a !important;border:1px solid rgba(255,255,255,0.07);color:#a0a0c0 !important;
 font-family:‘DM Sans’,sans-serif;font-size:15px;font-weight:500;
 cursor:pointer;margin-top:8px;
+-webkit-appearance:none;
 }
 
 /* ── SETUP SCREEN ── */
