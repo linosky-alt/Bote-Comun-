@@ -1611,13 +1611,19 @@ function micTouchStart(e) {
   ptrec.maxAlternatives = 3;
 
   ptrec.onstart = () => {
-    // confirmed started
+    showToast('🎙 Escuchando...', '');
   };
 
   ptrec.onresult = (ev) => {
     ptHasResult = true;
     const transcript = ev.results[0][0].transcript;
+    showToast('✓ Oído: "' + transcript + '"', 'ok');
     voiceSave(transcript);
+  };
+
+  ptrec.onspeechend = () => {
+    // Speech detected and ended — stop recognition
+    try { ptrec.stop(); } catch(e) {}
   };
 
   ptrec.onerror = (ev) => {
@@ -1626,21 +1632,22 @@ function micTouchStart(e) {
     if (ev.error === 'not-allowed') {
       showToast('Permiso denegado — Ajustes > Safari > Micrófono', 'err');
     } else if (ev.error === 'service-not-allowed') {
-      // On iOS this fires even with Dictation ON when opened in browser tab
-      // Solution: install as PWA (Add to Home Screen)
-      showToast('Instala la app: Safari → Compartir → Añadir a inicio', 'err');
+      showToast('Instala como PWA: Safari → Compartir → Añadir a inicio', 'err');
     } else if (ev.error === 'no-speech') {
       showToast('No te escuché — inténtalo de nuevo', 'err');
     } else if (ev.error === 'network') {
       showToast('Sin conexión para el reconocimiento de voz', 'err');
     } else if (ev.error !== 'aborted') {
-      showToast('Error: ' + ev.error, 'err');
+      showToast('Error mic: ' + ev.error, 'err');
     }
   };
 
   ptrec.onend = () => {
     ptActive = false;
     resetMicUI();
+    if (!ptHasResult) {
+      showToast('Sin resultado — habla más despacio', 'err');
+    }
   };
 
   // start() must be the last thing called, synchronously
@@ -1667,35 +1674,68 @@ function resetMicUI() {
 }
 
 function voiceSave(text) {
-  showToast('"' + text + '"', '');
+  // Show raw transcript so we can debug parsing
+  showToast('📝 ' + text, '');
   const t = text.toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 
-  const nm = t.match(/(\d+(?:[.,]\d{1,2})?)\s*(?:euros?|€)?/);
-  const imp = nm ? parseFloat(nm[1].replace(',', '.')) : null;
-  if (!imp) { showToast('No detecté el importe', 'err'); return; }
+  // Extract number — handle "sesenta", "treinta" etc + digit formats
+  const numWords = {
+    'cero':0,'uno':1,'una':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,
+    'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,
+    'trece':13,'catorce':14,'quince':15,'veinte':20,'veinticinco':25,
+    'treinta':30,'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,
+    'ochenta':80,'noventa':90,'cien':100,'ciento':100,'doscientos':200,
+    'trescientos':300,'cuatrocientos':400,'quinientos':500,'seiscientos':600,
+    'setecientos':700,'ochocientos':800,'novecientos':900
+  };
 
+  let imp = null;
+
+  // Try digit match first (60, 30.5, 30,50)
+  const nmDigit = t.match(/(\d+(?:[.,]\d{1,2})?)\s*(?:euros?|€)?/);
+  if (nmDigit) {
+    imp = parseFloat(nmDigit[1].replace(',', '.'));
+  }
+
+  // Try word match if no digit found
+  if (!imp) {
+    for (const [word, val] of Object.entries(numWords)) {
+      if (t.includes(word)) { imp = val; break; }
+    }
+  }
+
+  if (!imp || imp <= 0) {
+    showToast('No detecté el importe. Di p.ej: "gasto 30 euros tarjeta"', 'err');
+    return;
+  }
+
+  // Tipo
   let tipo = 'gasto';
-  if (/aport|met[eo]|ingres|pong[oa]|pon[eo]/.test(t)) tipo = 'aportacion';
+  if (/aport|met[eo]|ingres|pong[oa]|pon[eo]|recarg/.test(t)) tipo = 'aportacion';
 
+  // Quién
   let quien = null;
-  if (/lino/.test(t)) quien = 'Lino';
-  else if (/arantxa/.test(t)) quien = 'Arantxa';
+  if (/lino/.test(t)) quien = 'Lino';
+  else if (/arantxa|arancha|aranta/.test(t)) quien = 'Arantxa';
 
+  // Fondo
   let fondo = null;
-  if (/tarjeta|cuenta|banco/.test(t)) fondo = 'tarjeta';
-  else if (/efectivo|caja|cartera|metalico|cash/.test(t)) fondo = 'efectivo';
+  if (/tarjeta|cuenta|banco|bizum/.test(t)) fondo = 'tarjeta';
+  else if (/efectivo|caja|cartera|metalico|cash|físico/.test(t)) fondo = 'efectivo';
+  // Smart default by person
   if (!fondo && quien === 'Arantxa') fondo = 'tarjeta';
   if (!fondo && quien === 'Lino')    fondo = 'efectivo';
   if (!fondo) fondo = 'efectivo';
 
+  // Categoría
   let cat = 'Otros';
-  if (/supermercado|mercadona|compra|lidl|carrefour/.test(t)) cat = 'Supermercado';
-  else if (/restaurante|bar|cena|comida|cafe|pizza|sushi/.test(t)) cat = 'Restaurante';
-  else if (/gasolina|gasolinera|repsol|cepsa|bp/.test(t)) cat = 'Gasolina';
-  else if (/hogar|casa|limpieza|ikea|bricolaje/.test(t)) cat = 'Hogar';
-  else if (/ocio|cine|teatro|concierto|copa|discoteca/.test(t)) cat = 'Ocio';
+  if (/supermercado|mercadona|compra|lidl|carrefour|aldi|dia/.test(t)) cat = 'Supermercado';
+  else if (/restaurante|bar|cena|comida|cafe|cafetería|pizza|sushi|tapas/.test(t)) cat = 'Restaurante';
+  else if (/gasolina|gasolinera|repsol|cepsa|bp|combustible/.test(t)) cat = 'Gasolina';
+  else if (/hogar|casa|limpieza|ikea|bricolaje|ferretería/.test(t)) cat = 'Hogar';
+  else if (/ocio|cine|teatro|concierto|copa|discoteca|parque/.test(t)) cat = 'Ocio';
   else if (/viaje|hotel|vuelo|avion|tren|vacacion|airbnb/.test(t)) cat = 'Viajes';
 
   state.movs.push({
@@ -1704,7 +1744,7 @@ function voiceSave(text) {
     fondo, quien, nota: null, ts: Date.now()
   });
   persist();
-  showToast((tipo === 'aportacion' ? 'Aportación' : 'Gasto') + ' guardado — ' + fmt(imp), 'ok');
+  showToast((tipo === 'aportacion' ? '✓ Aportación' : '✓ Gasto') + ' ' + fmt(imp) + (quien ? ' · ' + quien : '') + ' · ' + (fondo === 'tarjeta' ? 'Tarjeta' : 'Efectivo'), 'ok');
 }
 
 /* ── GOOGLE DRIVE ───────────────────────────────────── */
@@ -1809,7 +1849,7 @@ function showToast(msg, type) {
   el.textContent = msg;
   el.className = 'toast ' + (type || '') + ' show';
   clearTimeout(toastT);
-  toastT = setTimeout(() => el.classList.remove('show'), 2800);
+  toastT = setTimeout(() => el.classList.remove('show'), 4000);
 }
 
 // Skip setup if already done
