@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="es">
+<html lang="es" style="background:#08080e">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -769,7 +769,7 @@ white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 </head>
-<body>
+<body style="background:#08080e;color:#f2f2f8">
 
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
@@ -1392,6 +1392,20 @@ function skipSetup() {
   showScreen('main');
   document.getElementById('micWrap').style.display = 'flex';
   updateSyncBar('', 'Local · sin sincronización');
+  requestMicPermission();
+}
+
+function requestMicPermission() {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        stream.getTracks().forEach(t => t.stop());
+        showToast('✓ Micrófono activado', 'success');
+      })
+      .catch(() => {
+        showToast('Activa el micrófono: Ajustes → Safari → Micrófono', 'error');
+      });
+  }
 }
 
 function updateSyncBar(type, text) {
@@ -1868,6 +1882,23 @@ function confirmVoice() {
   showToast('✓ Guardado por voz', 'success');
 }
 
+// ════════════════════ AUDIO FEEDBACK ════════════════════
+function playBeep(freq, duration, vol) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = freq;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(vol || 0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+
 // ════════════════════ PUSH TO TALK ════════════════════
 let ptRecognition = null;
 let ptActive = false;
@@ -1914,11 +1945,13 @@ function startDirectListening(e) {
     resetMicBtn();
   };
 
+  playBeep(880, 0.15, 0.4);
   try { ptRecognition.start(); } catch(e) { ptActive = false; resetMicBtn(); }
 }
 
 function stopDirectListening(e) {
   if (e) e.preventDefault();
+  playBeep(660, 0.12, 0.3);
   if (ptRecognition) {
     try { ptRecognition.stop(); } catch(e) {}
   }
