@@ -29,8 +29,8 @@
 
 - { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-html, body, #screen-setup, #screen-main, #screen-stats, #screen-historial {
-background: #08080e !important;
+html, body {
+background: #08080e;
 color: var(–text);
 font-family: ‘DM Sans’, sans-serif;
 min-height: 100vh;
@@ -597,7 +597,7 @@ margin-bottom: 8px; font-size: 13px;
 
 /* ── MIC FAB ── */
 .mic-wrap {
-position: fixed; bottom: 28px; left: 50%;
+position: fixed; bottom: 60px; left: 50%;
 transform: translateX(-50%); z-index: 100;
 display: flex; flex-direction: column; align-items: center; gap: 7px;
 }
@@ -649,6 +649,13 @@ display: flex; justify-content: space-around; align-items: center;
 padding: 12px 0 28px;
 background: linear-gradient(to top, var(–bg), rgba(8,8,14,0.95));
 border-top: 1px solid var(–border);
+}
+
+/* Space in center nav item so mic FAB doesn’t overlap */
+.nav-btn:nth-child(2) {
+visibility: hidden;
+pointer-events: none;
+width: 80px;
 }
 
 .nav-btn {
@@ -991,7 +998,7 @@ white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 <!-- MIC FAB -->
 
 <div class="mic-wrap" id="micWrap" style="display:none">
-  <div class="mic-btn" onclick="openVoice()">
+  <div class="mic-btn" id="micMainBtn" onmousedown="startDirectListening()" ontouchstart="startDirectListening(event)" onmouseup="stopDirectListening()" ontouchend="stopDirectListening(event)">
     <div class="mic-ring"></div>
     <div class="mic-ring2"></div>
     <svg width="28" height="28" viewBox="0 0 24 24" fill="#08080e">
@@ -1859,6 +1866,114 @@ function confirmVoice() {
   renderAll();
   closeModal('modalVoz');
   showToast('✓ Guardado por voz', 'success');
+}
+
+// ════════════════════ PUSH TO TALK ════════════════════
+let ptRecognition = null;
+let ptActive = false;
+
+function startDirectListening(e) {
+  if (e) e.preventDefault();
+  if (ptActive) return;
+  ptActive = true;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('Micrófono no disponible — actívalo en Ajustes de Safari', 'error');
+    ptActive = false;
+    return;
+  }
+
+  const btn = document.getElementById('micMainBtn');
+  btn.style.transform = 'scale(0.92)';
+  btn.style.boxShadow = '0 4px 48px rgba(200,240,74,0.7)';
+
+  ptRecognition = new SpeechRecognition();
+  ptRecognition.lang = 'es-ES';
+  ptRecognition.continuous = false;
+  ptRecognition.interimResults = false;
+
+  ptRecognition.onresult = (ev) => {
+    const transcript = ev.results[0][0].transcript;
+    showToast('🎙 "' + transcript + '"', '');
+    parseAndSaveVoice(transcript);
+  };
+
+  ptRecognition.onerror = (ev) => {
+    ptActive = false;
+    resetMicBtn();
+    if (ev.error === 'not-allowed') {
+      showToast('Permite el micrófono: Ajustes → Safari → Micrófono', 'error');
+    } else {
+      showToast('No te he entendido, inténtalo de nuevo', 'error');
+    }
+  };
+
+  ptRecognition.onend = () => {
+    ptActive = false;
+    resetMicBtn();
+  };
+
+  try { ptRecognition.start(); } catch(e) { ptActive = false; resetMicBtn(); }
+}
+
+function stopDirectListening(e) {
+  if (e) e.preventDefault();
+  if (ptRecognition) {
+    try { ptRecognition.stop(); } catch(e) {}
+  }
+  ptActive = false;
+  resetMicBtn();
+}
+
+function resetMicBtn() {
+  const btn = document.getElementById('micMainBtn');
+  if (btn) {
+    btn.style.transform = '';
+    btn.style.boxShadow = '';
+  }
+}
+
+function parseAndSaveVoice(text) {
+  const t = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  const amountMatch = t.match(/(\d+(?:[.,]\d{1,2})?)\s*(?:euros?|€)?/);
+  const importe = amountMatch ? parseFloat(amountMatch[1].replace(',', '.')) : null;
+
+  if (!importe) { showToast('No detecté el importe — intenta de nuevo', 'error'); return; }
+
+  let tipo = 'gasto';
+  if (/aport|met[eo]|ingres|pong|pone/.test(t)) tipo = 'aportacion';
+
+  let quien = null;
+  if (/lino/.test(t)) quien = 'Lino';
+  else if (/arantxa/.test(t)) quien = 'Arantxa';
+
+  let fondo = null;
+  if (/tarjeta|cuenta|banco/.test(t)) fondo = 'tarjeta';
+  else if (/efectivo|caja|cartera|metalico|cash/.test(t)) fondo = 'efectivo';
+  if (!fondo && quien === 'Arantxa') fondo = 'tarjeta';
+  if (!fondo && quien === 'Lino') fondo = 'efectivo';
+  if (!fondo) fondo = 'efectivo';
+
+  let categoria = 'Otros';
+  if (/supermercado|mercadona|compra|lidl/.test(t)) categoria = 'Supermercado';
+  else if (/restaurante|bar|cena|comida|almuerzo|cafe|pizza/.test(t)) categoria = 'Restaurante';
+  else if (/gasolina|gasolinera|combustible|repsol|cepsa/.test(t)) categoria = 'Gasolina';
+  else if (/hogar|casa|limpieza|ikea/.test(t)) categoria = 'Hogar';
+  else if (/ocio|cine|teatro|concierto|fiesta|copa/.test(t)) categoria = 'Ocio';
+  else if (/viaje|hotel|vuelo|avion|tren|vacacion/.test(t)) categoria = 'Viajes';
+
+  const mov = {
+    id: Date.now(), tipo, importe,
+    categoria: tipo === 'aportacion' ? 'Aportación' : categoria,
+    fondo, quien, nota: null, ts: Date.now()
+  };
+
+  state.movimientos.push(mov);
+  saveLocal();
+  renderAll();
+  showToast('✓ ' + (tipo === 'aportacion' ? 'Aportación' : 'Gasto') + ' guardado por voz', 'success');
 }
 
 // ════════════════════ TOAST ════════════════════
